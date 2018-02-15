@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Groupatizer</title>
+		<style media="screen">
+			body{
+				font-family: 'Raleway', sans-serif;
+				background-attachment: fixed;
+				/*background-color: #0C78E8;*/
+				background: #3a7bd5;  /* fallback for old browsers */
+				background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);  /* Chrome 10-25, Safari 5.1-6 */
+				background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+			.navbar.transparent.navbar-inverse .navbar-inner {
+   				background: rgba(0,0,0,0.4);
+			}
+			nav ul li {
+				margin-left:10px;
+				margin-right: 10px;
+			}
+			#header{
+				margin-top: 50px;
+				color: white;
+			}
+			#header h1{font-size: 8vw;}
+			#startOptions{
+				margin-top: 30px;
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+			#startOptions .startOption{
+				background-color: white;
+				border-radius: 5px;
+				padding: 10px
+			}
+			#description{
+				margin-top: 150px;
+				overflow: auto;
+			}
+			.desctiptionWhat{
+				background-color: white;
+				padding-bottom: 60px;
+				padding-top: 40px;
+			}
+			.desctiptionHow{
+				background-color: #0C78E8;
+				padding-bottom: 60px;
+				padding-top: 40px;
+			}
+			.desctiptionHow p{color: white}
+			.desctiptionHow h2{color:white}
+			#description img{
+				max-width: 350px;
+				max-height: 350px;
+			}
+			.descriptionItem{margin-top: 50px}
+
+			.modal input {
+				margin-top: 10px;
+			}
+			.modal button{
+				margin-top: 10px;
+			}
+
+		</style>
+
+		<script type="text/javascript">
+			function showSignInModalModal()
+			{
+				$('#signInModal').modal('show');
+			}
+
+			function showSignUpModal()
+			{
+				$('#signUpModal').modal('show');
+			}
+		</script>
+	</head>
+	<body>
+
+		<!-- Navbar -->
+		<nav class="navbar navbar-toggleable-md navbar-inverse">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="#">Groupatizer</a>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignInModalModal()">Sign in</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignUpModal()">Sign Up</button>
+					</li>
+				</ul>
+	  		</div>
+	  	</nav>
+
+		<!-- header -->
+		<div class="container-fluid text-center" id="header">
+			<div class="row">
+				<div class="col-sm-2">
+				</div>
+				<div class="col-md-8">
+					<em><h1>Groupatizer</h1></em>
+					<em><h3>Get grouped with Groupatizer</h3></em>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+		</div>
+
+		<!-- Join a group/start a group section-->
+		<div class="container-fluid text-center" id="startOptions">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-4 startOption">
+					<h4>Join an Event</h4>
+					<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
+					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Join</button>
+				</div>
+				<div class="col-md-1"></div>
+				<div class="col-md-4 startOption">
+					<h4>Start an Event</h4>
+					<input type="text" name="groupHash" placeholder="Event Name" class="form-control"> <br>
+					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Start</button>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
+
+		<!-- Info Section -->
+		<div class="container-fluid text-center" id="description">
+			<div class="row desctiptionWhat">
+				<div class="col-md-4 descriptionItem">
+					<img src="hack1.png" alt="hack" class="img-responsive">
+				</div>
+				<div class="col-md-8 descriptionItem">
+					<h2>What is Groupatizer?</h2>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+						ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+						in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+						Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+						deserunt mollit anim id est laborum</p>
+				</div>
+			</div>
+			<div class="row desctiptionHow">
+				<div class="col-md-8 descriptionItem">
+					<h2>How can I use Groupatizer?</h2>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+						sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+						ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+						in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+						Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+						deserunt mollit anim id est laborum</p>
+				</div>
+				<div class="col-md-4">
+					<img src="hack2.png" alt="hack2" class="img-responsive descriptionItem">
+				</div>
+			</div>
+		</div>
+
+		<!-- Sign up Modal -->
+		<div class="modal fade" id="signUpModal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+	    				<button type="button" class="close" data-dismiss="modal">&times;</button>
+	    				<h3>Sign Up!</h3>
+						<input type="text" name="firstName" placeholder="First Name" class="form-control">
+						<input type="text" name="lastName" placeholder="Last Name" class="form-control">
+						<input type="text" name="email" placeholder="Email" class="form-control">
+						<input type="password" name="password" class="form-control" placeholder="Password">
+						<button type="submit" name="button" class="btn btn-primary">Create</button>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Sign in Modal -->
+		<div class="modal fade" id="signInModal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+	    				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h3>Sign In</h3>
+						<input type="text" name="userName" placeholder="Username" class="form-control">
+						<input type="password" name="password" class="form-control" placeholder="Password">
+						<button type="submit" name="button" class="btn btn-primary">Sign In</button>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	</body>
+</html>
