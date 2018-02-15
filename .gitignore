@@ -3,4 +3,6 @@
 *.md
 *.pyc
 groupatize/settings.py
+manage.py
+groupatize/wsgi.py
 *.sqlite3
