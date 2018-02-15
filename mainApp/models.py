@@ -17,6 +17,10 @@ class User(models.Model):
 		# save
 		self.save()
 
+	# get all the events the user is a participant of in list form
+	def get_participant_events(self):
+		return self.part_Events.split(",")[1:]
+
 	# if you get compile error on sha3_256() try installing pysha3 with "$ pip install pysha3"
 	def change_password(self, new_password):
 		s = sha3_256()
@@ -38,6 +42,10 @@ class User(models.Model):
 		self.org_Events = self.org_Events + "," + str(new_event.pk)
 		# save user again
 		self.save()
+
+	# get all the events the user has created in list form
+	def get_organized_events(self):
+		return self.org_Events.split(",")[1:]
 
 
 
