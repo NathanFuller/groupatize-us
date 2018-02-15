@@ -2,5 +2,3 @@
 *.git
 *.md
 *.pyc
-groupatize/settings.py
-*.sqlite3
