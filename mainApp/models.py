@@ -12,7 +12,7 @@ class User(models.Model):
 
 	def join_event(self, event_ID):
 		# assuming the list is going to be a CSV
-		part_Events = self.part_Events + event_ID + ","
+		self.part_Events = self.part_Events + "," + event_ID
 
 class Event(models.Model):
 	name = models.CharField(max_length=250)
