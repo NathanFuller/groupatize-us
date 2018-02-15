@@ -1,4 +1,4 @@
 *.c9
 *.git
-*.sqlite3
 *.md
+*.pyc
