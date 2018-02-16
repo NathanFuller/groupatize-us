@@ -50,6 +50,7 @@ class User(models.Model):
 
 
 
+
 class Event(models.Model):
 	name = models.CharField(max_length=250)
 	description = models.CharField(max_length=2000, default="null")
@@ -60,3 +61,39 @@ class Event(models.Model):
 	participants = models.CharField(max_length=2000, default="")
 	project_ideas = models.CharField(max_length=2000, default="")
 	groups = models.CharField(max_length=2000, default="")
+
+	# add participant to CSV
+	def add_participant(self, user):
+		self.participants = self.participants + "," + str(user.pk)
+		self.save()
+
+	# get participants as list
+	def get_participants(self):
+		return self.participants.split(",")[1:]
+
+	# add new project idea to CSV
+	def add_project_idea(self, name, description, user):
+		self.save()
+		project_idea = Project(name=name, description=description, proposer=user, event=self)
+		project_idea.save()
+		self.project_ideas = self.project_ideas + "," + str(project_idea.pk)
+		self.save()
+
+	# get project ideas as list
+	def get_project_ideas(self):
+		return self.project_ideas.split(",")[1:]
+
+
+
+class Project(models.Model):
+	name = models.CharField(max_length=250)
+	description = models.CharField(max_length=2000)
+	proposer = models.ForeignKey(User)
+	event = models.ForeignKey(Event)
+	ratings = models.CharField(max_length=2000, default="")
+
+
+class U2P_Relation(models.Model):
+	rater = models.ForeignKey(User)
+	project = models.ForeignKey(Project)
+	rating = models.IntegerField()
