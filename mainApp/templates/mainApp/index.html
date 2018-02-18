@@ -85,7 +85,6 @@
 		</script>
 	</head>
 	<body>
-
 		<!-- Navbar -->
 		<nav class="navbar navbar-toggleable-md navbar-inverse">
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -193,11 +192,17 @@
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">
 	    			<div class="modal-body text-center">
-	    				<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h3>Sign In</h3>
-						<input type="text" name="userName" placeholder="Username" class="form-control">
-						<input type="password" name="password" class="form-control" placeholder="Password">
-						<button type="submit" name="button" class="btn btn-primary">Sign In</button>
+						<form action="login/" method="post">
+							{% csrf_token %}
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h3>Sign In</h3>
+							{% if login_success == False %}
+								<p style="color:white; background-color:red">Incorrect Email/Password</p>
+							{% endif %}
+							<input type="text" name="email" placeholder="E-Mail" class="form-control">
+							<input type="password" name="password" class="form-control" placeholder="Password">
+							<button type="submit" name="button" class="btn btn-primary">Sign In</button>
+						</form>
 	    			</div>
 	    		</div>
 	    	</div>
