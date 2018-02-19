@@ -77,6 +77,8 @@ def redir_create_event_page(request):
 					'first_name':request.GET.get('first_name'),
 					'last_name':request.GET.get('last_name'),
 					'email_in_use':'True',
+					'email':"",
+					'password':'',
 					'description':request.GET.get('description'),
 					'preffered_size':request.GET.get('preffered_size')
 					}
@@ -111,7 +113,7 @@ def create_event(request):
 		# if theres already an account with that email then return an error
 		if len(results) > 0:
 			return redirect('../?email_in_use=True&first_name='+first_name+'&last_name='+last_name+
-			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
+			'&preffered_size='+ preffered_size +'&event_name='+event_name + '&description='+description)
 
 		# hash password
 		s = sha3_256()
