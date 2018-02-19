@@ -157,7 +157,7 @@
 				 		<a href="#" title="Dashboard"><i class="fa fa-user-circle"></i></a>
 					</li>
 					<li class="nav-item">
-						<a href="logout/" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
+						<a href="{% url 'logout' %}" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
 					</li>
 				{% endif %}
 				</ul>
@@ -183,9 +183,12 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
-					<h4>Start an Event</h4>
-					<input type="text" name="groupHash" placeholder="Event Name" class="form-control"> <br>
-					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Start</button>
+					<form action="create/" method="post">
+						{% csrf_token %}
+						<h4>Start an Event</h4>
+						<input type="text" name="event_name" placeholder="Event Name" class="form-control"> <br>
+						<button type="submit" class="btn btn-outline-primary btn-block">Start</button>
+					</form>
 				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
