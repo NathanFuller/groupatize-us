@@ -6,8 +6,9 @@
 		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+		<script src="https://use.fontawesome.com/c369fa3dc3.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Groupatizer</title>
 		<style media="screen">
@@ -69,6 +70,12 @@
 			.modal button{
 				margin-top: 10px;
 			}
+			i {
+				color:white;
+			}
+			.fa {
+				font-size: 3vw;
+			}
 
 		</style>
 
@@ -83,6 +90,21 @@
 				$('#signUpModal').modal('show');
 			}
 		</script>
+		{% if login_success == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_sign_in_modal').modal('show');
+				});
+			</script>
+		{% endif %}
+
+		{% if logout_success == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_sign_out_modal').modal('show');
+				});
+			</script>
+		{% endif %}
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -93,12 +115,21 @@
 			<a class="navbar-brand" href="#">Groupatizer</a>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ml-auto">
+				{% if request.session.user == None %}
 					<li class="nav-item">
 						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignInModalModal()">Sign in</button>
 					</li>
 					<li class="nav-item">
 						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignUpModal()">Sign Up</button>
 					</li>
+				{% else %}
+					<li class="nav-item">
+				 		<a href="#" title="Dashboard"><i class="fa fa-user-circle"></i></a>
+					</li>
+					<li class="nav-item">
+						<a href="logout/" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
+					</li>
+				{% endif %}
 				</ul>
 	  		</div>
 	  	</nav>
@@ -196,13 +227,39 @@
 							{% csrf_token %}
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 							<h3>Sign In</h3>
-							{% if login_success == False %}
+							{% if login_success == 'False' %}
 								<p style="color:white; background-color:red">Incorrect Email/Password</p>
 							{% endif %}
 							<input type="text" name="email" placeholder="E-Mail" class="form-control">
 							<input type="password" name="password" class="form-control" placeholder="Password">
 							<button type="submit" name="button" class="btn btn-primary">Sign In</button>
 						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Successful sign in confirmation -->
+		<div class="modal fade" id="successful_sign_in_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Success!</h5>
+						<p>You have been signed in</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Successful sign out confirmation -->
+		<div class="modal fade" id="successful_sign_out_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Success!</h5>
+						<p>You have been signed out</p>
 	    			</div>
 	    		</div>
 	    	</div>
