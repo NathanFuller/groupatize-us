@@ -6,8 +6,9 @@
 		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+		<script src="https://use.fontawesome.com/c369fa3dc3.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Groupatizer</title>
 		<style media="screen">
@@ -69,6 +70,12 @@
 			.modal button{
 				margin-top: 10px;
 			}
+			i {
+				color:white;
+			}
+			.fa {
+				font-size: 3vw;
+			}
 
 		</style>
 
@@ -83,9 +90,53 @@
 				$('#signUpModal').modal('show');
 			}
 		</script>
+		<!-- If its a redirect off a login success-->
+		{% if login_success == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_sign_in_modal').modal('show');
+				});
+			</script>
+		{% endif %}
+
+		<!-- If its a redirect off a login failure-->
+		{% if login_success == 'False' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#signInModal').modal('show');
+				});
+			</script>
+		{% endif %}
+
+		<!-- If its a redirect off a logout success-->
+		{% if logout_success == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_sign_out_modal').modal('show');
+				});
+			</script>
+		{% endif %}
+
+		<!-- If its a redirect off a signup failure-->
+		{% if email_in_use == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#signUpModal').modal('show');
+				});
+			</script>
+		{% endif %}
+
+		<!-- If its a redirect off a signup success-->
+		{% if create_account == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_sign_up_modal').modal('show');
+				});
+			</script>
+		{% endif %}
+
 	</head>
 	<body>
-
 		<!-- Navbar -->
 		<nav class="navbar navbar-toggleable-md navbar-inverse">
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,12 +145,21 @@
 			<a class="navbar-brand" href="#">Groupatizer</a>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ml-auto">
+				{% if request.session.user == None %}
 					<li class="nav-item">
 						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignInModalModal()">Sign in</button>
 					</li>
 					<li class="nav-item">
 						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignUpModal()">Sign Up</button>
 					</li>
+				{% else %}
+					<li class="nav-item">
+				 		<a href="#" title="Dashboard"><i class="fa fa-user-circle"></i></a>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'logout' %}" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
+					</li>
+				{% endif %}
 				</ul>
 	  		</div>
 	  	</nav>
@@ -123,15 +183,18 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
-					<h4>Join an Event</h4>
-					<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
-					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Join</button>
+					<form action="create/" method="post">
+						{% csrf_token %}
+						<h4>Start an Event</h4>
+						<input type="text" name="event_name" placeholder="Event Name" class="form-control"> <br>
+						<button type="submit" class="btn btn-outline-primary btn-block">Start</button>
+					</form>
 				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
-					<h4>Start an Event</h4>
-					<input type="text" name="groupHash" placeholder="Event Name" class="form-control"> <br>
-					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Start</button>
+					<h4>Join an Event</h4>
+					<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
+					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Join</button>
 				</div>
 				<div class="col-md-1"></div>
 			</div>
@@ -176,13 +239,19 @@
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">
 	    			<div class="modal-body text-center">
-	    				<button type="button" class="close" data-dismiss="modal">&times;</button>
-	    				<h3>Sign Up!</h3>
-						<input type="text" name="firstName" placeholder="First Name" class="form-control">
-						<input type="text" name="lastName" placeholder="Last Name" class="form-control">
-						<input type="text" name="email" placeholder="Email" class="form-control">
-						<input type="password" name="password" class="form-control" placeholder="Password">
-						<button type="submit" name="button" class="btn btn-primary">Create</button>
+						<form action="signup/" method="post">
+							{% csrf_token %}
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+		    				<h3>Sign Up!</h3>
+							{% if email_in_use == 'True' %}
+								<p style="color:white; background-color:red">That email is already associated with an account</p>
+							{% endif %}
+							<input required type="text" name="first_name" placeholder="First Name" class="form-control">
+							<input required type="text" name="last_name" placeholder="Last Name" class="form-control">
+							<input required type="text" name="email" placeholder="Email" class="form-control">
+							<input required type="password" name="password" class="form-control" placeholder="Password">
+							<button type="submit" name="button" class="btn btn-primary">Create</button>
+						</form>
 	    			</div>
 	    		</div>
 	    	</div>
@@ -193,11 +262,56 @@
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">
 	    			<div class="modal-body text-center">
-	    				<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h3>Sign In</h3>
-						<input type="text" name="userName" placeholder="Username" class="form-control">
-						<input type="password" name="password" class="form-control" placeholder="Password">
-						<button type="submit" name="button" class="btn btn-primary">Sign In</button>
+						<form action="login/" method="post">
+							{% csrf_token %}
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h3>Sign In</h3>
+							{% if login_success == 'False' %}
+								<p style="color:white; background-color:red">Incorrect Email/Password</p>
+							{% endif %}
+							<input required type="text" name="email" placeholder="E-Mail" class="form-control">
+							<input required type="password" name="password" class="form-control" placeholder="Password">
+							<button type="submit" name="button" class="btn btn-primary">Sign In</button>
+						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Successful sign in confirmation -->
+		<div class="modal fade" id="successful_sign_in_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Success!</h5>
+						<p>You have been signed in</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Successful sign out confirmation -->
+		<div class="modal fade" id="successful_sign_out_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4>Success!</h4>
+						<p>You have been signed out</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+		<!-- Successful account creation confirmation -->
+		<div class="modal fade" id="successful_sign_up_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4>Success!</h4>
+						<p>Your account has been succesfully created</p>
 	    			</div>
 	    		</div>
 	    	</div>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+		<script src="https://use.fontawesome.com/c369fa3dc3.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Create Event</title>
+		<style media="screen">
+			body{
+				font-family: 'Raleway', sans-serif;
+				background-attachment: fixed;
+				/*background-color: #0C78E8;*/
+				background: #3a7bd5;  /* fallback for old browsers */
+				background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);  /* Chrome 10-25, Safari 5.1-6 */
+				background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+			/* navbar styling*/
+			.navbar.transparent.navbar-inverse .navbar-inner {
+				background: rgba(0,0,0,0.4);
+			}
+			nav ul li {
+				margin-left:10px;
+				margin-right: 10px;
+			}
+			.event_form{
+				margin-top: 80px;
+				background-color: white;
+				border-radius: 5px;
+				padding: 20px;
+			}
+			.event_form input, textarea, button{
+				margin: 10px;
+			}
+		</style>
+		{% if email_in_use == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#email_in_use_modal').modal('show');
+				});
+			</script>
+		{% endif %}
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav class="navbar navbar-toggleable-md navbar-inverse">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="{% url 'index' %}">Groupatizer</a>
+	  	</nav>
+
+		<div class="container-fluid text-center" id="event_form">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 event_form" id="event_form">
+					<form action="createEvent/" method="post">
+						{% csrf_token %}
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-12">
+									<h2>Create Event</h2>
+									{% if request.session.user == None %}
+										<input required type="text" name="first_name" placeholder="First Name" class="form-control" value="{{first_name}}">
+										<input required type="text" name="last_name" placeholder="Last Name" class="form-control" value="{{last_name}}">
+										<input required type="text" name="email" placeholder="Email" class="form-control" value="{{email}}">
+										<input required type="password" name="password" class="form-control" placeholder="Password">
+									{% endif %}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<input required type="text" name="event_name" value="{{event_name}}" placeholder="Event Name" class="form-control">
+								</div>
+								<div class="col-md-6">
+									<input required type="text" name="preffered_size" placeholder="Preffered Group Size" class="form-control" value="{{preffered_size}}">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<textarea required name="description" rows="4" placeholder="Description" class="form-control" value="{{description}}"></textarea>
+									<button type="submit" class="btn btn-block btn-outline-primary">Create Event</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
+		</div>
+
+		<!-- failed to create user account -->
+		<div class="modal fade" id="email_in_use_modal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4>Whoops</h4>
+						<p>That email is already registered to an account!</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	</body>
+</html>

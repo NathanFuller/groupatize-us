@@ -47,6 +47,9 @@ class User(models.Model):
 	def get_organized_events(self):
 		return self.org_Events.split(",")[1:]
 
+	def __str__(self):
+		return self.name
+
 
 
 
@@ -82,6 +85,9 @@ class Event(models.Model):
 	# get project ideas as list
 	def get_project_ideas(self):
 		return self.project_ideas.split(",")[1:]
+
+	def __str__(self):
+		return self.name
 
 
 
