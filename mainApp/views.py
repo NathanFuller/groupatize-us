@@ -23,7 +23,7 @@ def login(request):
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(password)
+	s.update(bytearray(password, 'utf8'))
 	password = s.hexdigest()
 
 	# search for account associated with Email
@@ -61,7 +61,7 @@ def create_account(request):
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(password)
+	s.update(bytearray(password, 'utf8'))
 	password = s.hexdigest()
 	print s.hexdigest()
 
@@ -122,7 +122,7 @@ def create_event(request):
 
 		# hash password
 		s = hashlib.sha3_256()
-		s.update(password)
+		s.update(bytearray(password, 'utf8'))
 		password = s.hexdigest()
 
 		#create the user
