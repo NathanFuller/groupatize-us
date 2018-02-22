@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
-from hashlib import sha3_256
 from django.db import models
+import hashlib
+import sha3
 
 
 class User(models.Model):
@@ -23,10 +24,11 @@ class User(models.Model):
 
 	# if you get compile error on sha3_256() try installing pysha3 with "$ pip install pysha3"
 	def change_password(self, new_password):
-		s = sha3_256()
+		s = hashlib.sha3_256()
 		# make the hash and set it
-		s.update(bytearray(new_password, 'utf8'))
+		s.update(password)
 		self.password = s.hexdigest()
+		#self.password = new_password
 		# save
 		self.save()
 

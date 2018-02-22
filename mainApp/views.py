@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from .models import User
-from hashlib import sha3_256
+import hashlib
+import sha3
 
 def index(request):
+	print "Main page!"
 	context = {'login_success':request.GET.get('login_success'),
 				'logout_success':request.GET.get('logout_success'),
 				'email_in_use':request.GET.get('email_in_use'),
@@ -14,14 +16,14 @@ def index(request):
 
 
 def login(request):
-	print("Entered login processing")
+	print "Entered login processing"
 	# get username and password
 	email = request.POST['email'].strip()
 	password = request.POST['password'].strip()
 
 	# hash password
-	s = sha3_256()
-	s.update(bytearray(password, 'utf8'))
+	s = hashlib.sha3_256()
+	s.update(password)
 	password = s.hexdigest()
 
 	# search for account associated with Email
@@ -37,10 +39,12 @@ def login(request):
 		return redirect('../?login_success=False')
 
 def logout(request):
+	print "logout"
 	request.session['user'] = None
 	return redirect('../?logout_success=True')
 
 def create_account(request):
+	print "Create account!"
 	# get form data
 	first_name = request.POST['first_name'].strip()
 	last_name = request.POST['last_name'].strip()
@@ -56,9 +60,10 @@ def create_account(request):
 		return redirect('../?email_in_use=True')
 
 	# hash password
-	s = sha3_256()
-	s.update(bytearray(password, 'utf8'))
+	s = hashlib.sha3_256()
+	s.update(password)
 	password = s.hexdigest()
+	print s.hexdigest()
 
 	#create the user
 	user = User(name=full_name, email=email, password=password)
@@ -71,6 +76,7 @@ def create_account(request):
 	return redirect('../?create_account=True')
 
 def redir_create_event_page(request):
+	print "Redirect create event"
 
 	if request.GET.get('email_in_use') == 'True':
 		context = {'event_name':request.GET.get('event_name'),
@@ -87,14 +93,15 @@ def redir_create_event_page(request):
 	return render(request, 'mainApp/createEvent.html', context)
 
 def create_event(request):
+	print "Create event"
 	# get form data
 	event_name = request.POST['event_name']
 	description = request.POST['description']
 	preffered_size = request.POST['preffered_size']
-	print("Creating event")
+	print "Creating event"
 
 	if request.session['user'] != None:
-		print("user logged in")
+		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
 		user.create_event(event_name, description, preffered_size)
 	else:
@@ -114,8 +121,8 @@ def create_event(request):
 			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
 
 		# hash password
-		s = sha3_256()
-		s.update(bytearray(password, 'utf8'))
+		s = hashlib.sha3_256()
+		s.update(password)
 		password = s.hexdigest()
 
 		#create the user
