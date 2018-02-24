@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from .models import User
+from .models import *
 import hashlib
 import sha3
 
@@ -135,3 +135,17 @@ def create_event(request):
 		#create the event
 		user.create_event(event_name, description, preffered_size)
 	return redirect(reverse('index'))
+
+def event_page(request, event_id=None):
+	events = Event.objects.filter(pk=event_id)
+	context = {}
+	if len(events) == 1:
+		event = events[0]
+		context = {'found_event':True,
+					'event_name':event.name,
+					'event_description':event.description,
+					'preffered_size':event.ideal_group_size}
+	else:
+		context = {'found_event':False}
+
+	return render(request, 'mainApp/event.html', context)
