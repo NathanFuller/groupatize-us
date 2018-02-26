@@ -139,14 +139,31 @@ def create_event(request):
 	return redirect(reverse('index'))
 
 def event_page(request, event_id=None):
+	# find the event
 	events = Event.objects.filter(pk=event_id)
 	context = {}
+
+	# if we found the event
 	if len(events) == 1:
+		# get the event from the list
 		event = events[0]
+
+		# get the project keys associated with this event
+		project_ideas_keys = event.get_project_ideas()
+
+		# set up an empty list to put the actual project idea objects in
+		project_ideas = []
+
+		# loop through the keys and put the acutal project object in the lsit
+		for key in project_ideas_keys:
+			project_ideas.append(Project.objects.filter(pk=key)[0])
+
+		# context info
 		context = {'found_event':True,
 					'event_name':event.name,
 					'event_description':event.description,
-					'preffered_size':event.ideal_group_size}
+					'preffered_size':event.ideal_group_size,
+					'project_ideas': project_ideas}
 	else:
 		context = {'found_event':False}
 
