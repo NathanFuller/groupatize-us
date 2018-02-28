@@ -101,11 +101,12 @@ def create_event(request):
 	description = request.POST['description']
 	preffered_size = request.POST['preffered_size']
 	print "Creating event"
+	event = None
 
 	if request.session['user'] != None:
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
-		user.create_event(event_name, description, preffered_size)
+		event = user.create_event(event_name, description, preffered_size)
 	else:
 		# get form data
 		first_name = request.POST['first_name'].strip()
@@ -135,8 +136,8 @@ def create_event(request):
 		request.session['user'] = user.pk
 
 		#create the event
-		user.create_event(event_name, description, preffered_size)
-	return redirect(reverse('index'))
+		event = user.create_event(event_name, description, preffered_size)
+	return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
 
 def event_page(request, event_id=None):
 	# find the event
