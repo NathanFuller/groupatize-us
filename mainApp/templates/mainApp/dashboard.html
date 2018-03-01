@@ -12,6 +12,10 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Event</title>
 		<style media="screen">
+            a, a:hover {
+                color: black;
+                text-decoration: none;
+            }
 			body{
 				font-family: 'Raleway', sans-serif;
 				background-attachment: fixed;
@@ -20,7 +24,6 @@
 				background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);  /* Chrome 10-25, Safari 5.1-6 */
 				background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 			}
-			/* Start navbar styling */
 			.navbar.transparent.navbar-inverse .navbar-inner {
 				background: rgba(0,0,0,0.4);
 			}
@@ -28,13 +31,6 @@
 				margin-left:10px;
 				margin-right: 10px;
 			}
-			i {
-				color:white;
-			}
-			.fa {
-				font-size: 3vw;
-			}
-			/* End navbar styling */
 			h1, p{
 				color: white;
 			}
@@ -42,13 +38,18 @@
 				font-size: 5vw;
 				margin-top: 75px;
 			}
-			.project_idea{
+			.event_container{
 				background-color: white;
 				border-radius: 5px;
 				padding-top: 10px;
 				padding-bottom: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
 			}
-			.project_idea p{
+            .event_container:hover{
+				background-color: lightgray;
+			}
+			.event_container p{
 				color: black
 			}
 		</style>
@@ -71,7 +72,7 @@
 					</li>
 				{% else %}
 					<li class="nav-item">
-				 		<a href="./dashboard.html" title="Dashboard"><i class="fa fa-user-circle"></i></a>
+				 		<a href="../" title="Dashboard"><i class="fa fa-user-circle"></i></a>
 					</li>
 					<li class="nav-item">
 						<a href="{% url 'logout' %}" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
@@ -80,50 +81,35 @@
 				</ul>
 	  		</div>
 	  	</nav>
-		{% if found_event == True %}
-			<div class="container-fluid text-center">
-				<div class="row">
+
+
+			<div class="container-fluid text-left">
+				<div>
 					<div class="col-md-12">
-						<h1>{{event_name}}</h1>
-						<p>{{event_description}}</p>
+						<h1>My Events:</h1>
 					</div>
 				</div>
 			</div>
+
 			<div class="container-fluid text-center">
-			{% if project_ideas %}
-				<div class="row">
-				{% for idea in project_ideas %}
-					<div class="col-md-4">
-						<div class="project_idea">
-							<h2>{{idea.name}}</h2>
-							<p>{{idea.description}}</p>
-						</div>
-					</div>
-					{% if forloop.counter0|divisibleby:3 %}
-						</div><div class="row">
-					{% endif %}
-				{% endfor %}
-				</div>
-			{% else %}
-				<div class="row">
-					<div class="col-md-2"></div>
-					<div class="col-md-8">
-						<div class="project_idea">
-							<h2>No project Ideas</h2>
-						</div>
-					</div>
-					<div class="col-md-2"></div>
-				</div>
-			{% endif %}
-			</div>
-		{% else %}
-			<div class="container-fluid text-center">
-				<div class="row">
-					<div class="col-md-12">
-						<h1>Event Not Found!</h1>
-					</div>
-				</div>
-			</div>
-		{% endif %}
+                {% if event_list.count > 1 %}
+                    <div class="row">
+                    {% for event in event_list %}
+                        <div class="col-md-4">
+                            <a href="../event/{{event.id}}">
+                                <div class="event_container">
+                                    <h2>{{event.name}}</h2>
+                                    <p>{{event.description}}</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="event_container">
+                        <h2>No Events Created</h2>
+                    </div>
+                {% endif %}
+            </div>
 	</body>
 </html>
