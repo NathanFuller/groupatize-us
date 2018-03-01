@@ -169,3 +169,32 @@ def event_page(request, event_id=None):
 		context = {'found_event':False}
 
 	return render(request, 'mainApp/event.html', context)
+
+def dashboard_page(request):
+	print "Dashboard"
+
+	if request.session['user'] != None:
+		print "user logged in"
+		user = User.objects.filter(pk=request.session['user'])[0]
+
+		event_keys = user.get_organized_events()
+		event_list = []
+
+		for key in event_keys:
+			event_list.append(Event.objects.filter(pk=key)[0])
+
+		# context info
+		if len(event_list) > 0:
+			context = {'event_list': event_list}
+		else:
+			context = {'events': []}
+		return render(request, 'mainApp/dashboard.html', context)
+	else:
+		print "Not Logged in"
+
+	return redirect(index)
+
+
+
+
+
