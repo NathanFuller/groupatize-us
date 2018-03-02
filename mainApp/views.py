@@ -109,12 +109,13 @@ def create_event(request):
 	event_name = request.POST['event_name']
 	description = request.POST['description']
 	preffered_size = request.POST['preffered_size']
-	#print "Creating event"
+	print "Creating event"
+	event = None
 
 	if request.session['user'] != None:
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
-		user.create_event(event_name, description, preffered_size)
+		event = user.create_event(event_name, description, preffered_size)
 	else:
 		# get form data
 		first_name = request.POST['first_name'].strip()
@@ -144,5 +145,65 @@ def create_event(request):
 		request.session['user'] = user.pk
 
 		#create the event
-		user.create_event(event_name, description, preffered_size)
-	return redirect(reverse('index'))
+		event = user.create_event(event_name, description, preffered_size)
+	return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
+
+def event_page(request, event_id=None):
+	# find the event
+	events = Event.objects.filter(pk=event_id)
+	context = {}
+
+	# if we found the event
+	if len(events) == 1:
+		# get the event from the list
+		event = events[0]
+
+		# get the project keys associated with this event
+		project_ideas_keys = event.get_project_ideas()
+
+		# set up an empty list to put the actual project idea objects in
+		project_ideas = []
+
+		# loop through the keys and put the acutal project object in the lsit
+		for key in project_ideas_keys:
+			project_ideas.append(Project.objects.filter(pk=key)[0])
+
+		# context info
+		context = {'found_event':True,
+					'event_name':event.name,
+					'event_description':event.description,
+					'preffered_size':event.ideal_group_size,
+					'project_ideas': project_ideas}
+	else:
+		context = {'found_event':False}
+
+	return render(request, 'mainApp/event.html', context)
+
+def dashboard_page(request):
+	print "Dashboard"
+
+	if request.session['user'] != None:
+		print "user logged in"
+		user = User.objects.filter(pk=request.session['user'])[0]
+
+		event_keys = user.get_organized_events()
+		event_list = []
+
+		for key in event_keys:
+			event_list.append(Event.objects.filter(pk=key)[0])
+
+		# context info
+		if len(event_list) > 0:
+			context = {'event_list': event_list}
+		else:
+			context = {'events': []}
+		return render(request, 'mainApp/dashboard.html', context)
+	else:
+		print "Not Logged in"
+
+	return redirect(index)
+
+
+
+
+
