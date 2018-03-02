@@ -1,40 +1,29 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-import smtplib
-from .models import User
+from .models import *
 import hashlib
 import sha3
 
 def index(request):
-	#print "Main page!"
-	
+	print "Main page!"
 	context = {'login_success':request.GET.get('login_success'),
 				'logout_success':request.GET.get('logout_success'),
 				'email_in_use':request.GET.get('email_in_use'),
 				'create_account':request.GET.get('create_account')
 				}
-	
-	#s=smtplib.SMTP("smtp.gmail.com", 587)
-	#s.ehlo()
-	#s.starttls()
-	#s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
-	#to_email = "groupatizer@gmail.com"
-	#msg = '\r\n'.join(['Subject: Test Subject 2', "", "this is the body 2"])
-	#s.sendmail(EMAIL_HOST_USER, to_email, msg)
-				
 	return render(request, 'mainApp/index.html', context)
 
 
 def login(request):
-	#print "Entered login processing"
+	print "Entered login processing"
 	# get username and password
 	email = request.POST['email'].strip()
 	password = request.POST['password'].strip()
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(password)
+	s.update(bytearray(password, 'utf8'))
 	password = s.hexdigest()
 
 	# search for account associated with Email
@@ -50,12 +39,12 @@ def login(request):
 		return redirect('../?login_success=False')
 
 def logout(request):
-	#print "logout"
+	print "logout"
 	request.session['user'] = None
 	return redirect('../?logout_success=True')
 
 def create_account(request):
-	#print "Create account!"
+	print "Create account!"
 	# get form data
 	first_name = request.POST['first_name'].strip()
 	last_name = request.POST['last_name'].strip()
@@ -72,7 +61,7 @@ def create_account(request):
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(password)
+	s.update(bytearray(password, 'utf8'))
 	password = s.hexdigest()
 	print s.hexdigest()
 
@@ -87,13 +76,15 @@ def create_account(request):
 	return redirect('../?create_account=True')
 
 def redir_create_event_page(request):
-	#print "Redirect create event"
+	print "Redirect create event"
 
 	if request.GET.get('email_in_use') == 'True':
 		context = {'event_name':request.GET.get('event_name'),
 					'first_name':request.GET.get('first_name'),
 					'last_name':request.GET.get('last_name'),
 					'email_in_use':'True',
+					'email':"",
+					'password':'',
 					'description':request.GET.get('description'),
 					'preffered_size':request.GET.get('preffered_size')
 					}
@@ -104,17 +95,18 @@ def redir_create_event_page(request):
 	return render(request, 'mainApp/createEvent.html', context)
 
 def create_event(request):
-	#print "Create event"
+	print "Create event"
 	# get form data
 	event_name = request.POST['event_name']
 	description = request.POST['description']
 	preffered_size = request.POST['preffered_size']
-	#print "Creating event"
+	print "Creating event"
+	event = None
 
 	if request.session['user'] != None:
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
-		user.create_event(event_name, description, preffered_size)
+		event = user.create_event(event_name, description, preffered_size)
 	else:
 		# get form data
 		first_name = request.POST['first_name'].strip()
@@ -129,11 +121,11 @@ def create_event(request):
 		# if theres already an account with that email then return an error
 		if len(results) > 0:
 			return redirect('../?email_in_use=True&first_name='+first_name+'&last_name='+last_name+
-			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
+			'&preffered_size='+ preffered_size +'&event_name='+event_name + '&description='+description)
 
 		# hash password
 		s = hashlib.sha3_256()
-		s.update(password)
+		s.update(bytearray(password, 'utf8'))
 		password = s.hexdigest()
 
 		#create the user
@@ -144,5 +136,65 @@ def create_event(request):
 		request.session['user'] = user.pk
 
 		#create the event
-		user.create_event(event_name, description, preffered_size)
-	return redirect(reverse('index'))
+		event = user.create_event(event_name, description, preffered_size)
+	return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
+
+def event_page(request, event_id=None):
+	# find the event
+	events = Event.objects.filter(pk=event_id)
+	context = {}
+
+	# if we found the event
+	if len(events) == 1:
+		# get the event from the list
+		event = events[0]
+
+		# get the project keys associated with this event
+		project_ideas_keys = event.get_project_ideas()
+
+		# set up an empty list to put the actual project idea objects in
+		project_ideas = []
+
+		# loop through the keys and put the acutal project object in the lsit
+		for key in project_ideas_keys:
+			project_ideas.append(Project.objects.filter(pk=key)[0])
+
+		# context info
+		context = {'found_event':True,
+					'event_name':event.name,
+					'event_description':event.description,
+					'preffered_size':event.ideal_group_size,
+					'project_ideas': project_ideas}
+	else:
+		context = {'found_event':False}
+
+	return render(request, 'mainApp/event.html', context)
+
+def dashboard_page(request):
+	print "Dashboard"
+
+	if request.session['user'] != None:
+		print "user logged in"
+		user = User.objects.filter(pk=request.session['user'])[0]
+
+		event_keys = user.get_organized_events()
+		event_list = []
+
+		for key in event_keys:
+			event_list.append(Event.objects.filter(pk=key)[0])
+
+		# context info
+		if len(event_list) > 0:
+			context = {'event_list': event_list}
+		else:
+			context = {'events': []}
+		return render(request, 'mainApp/dashboard.html', context)
+	else:
+		print "Not Logged in"
+
+	return redirect(index)
+
+
+
+
+

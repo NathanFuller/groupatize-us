@@ -3,4 +3,4 @@
 *.md
 *.pyc
 db.sqlite3
-migrations/*
+venv

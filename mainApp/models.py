@@ -45,6 +45,7 @@ class User(models.Model):
 		self.org_Events = self.org_Events + "," + str(new_event.pk)
 		# save user again
 		self.save()
+		return new_event
 
 	# get all the events the user has created in list form
 	def get_organized_events(self):
