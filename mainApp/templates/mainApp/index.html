@@ -135,6 +135,7 @@
 			</script>
 		{% endif %}
 
+
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -204,7 +205,8 @@
 		<div class="container-fluid text-center" id="description">
 			<div class="row desctiptionWhat">
 				<div class="col-md-4 descriptionItem">
-					<img src="/images/hack1.png" alt="hack" class="img-responsive">
+					{% load static %}
+					<img src="{% static 'mainApp/hack1.png' %}" alt="hack" class="img-responsive">
 				</div>
 				<div class="col-md-8 descriptionItem">
 					<h2>What is Groupatizer?</h2>
@@ -229,7 +231,7 @@
 						deserunt mollit anim id est laborum</p>
 				</div>
 				<div class="col-md-4">
-					<img src="hack2.png" alt="hack2" class="img-responsive descriptionItem">
+					<img src="{% static 'mainApp/hack2.png' %}" alt="hack2" class="img-responsive descriptionItem">
 				</div>
 			</div>
 		</div>
