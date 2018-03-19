@@ -1,29 +1,40 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from .models import *
+import smtplib
+from .models import User
 import hashlib
 # import sha3
 
 def index(request):
-	print "Main page!"
+	#print "Main page!"
+	
 	context = {'login_success':request.GET.get('login_success'),
 				'logout_success':request.GET.get('logout_success'),
 				'email_in_use':request.GET.get('email_in_use'),
 				'create_account':request.GET.get('create_account')
 				}
+	
+	#s=smtplib.SMTP("smtp.gmail.com", 587)
+	#s.ehlo()
+	#s.starttls()
+	#s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+	#to_email = "groupatizer@gmail.com"
+	#msg = '\r\n'.join(['Subject: Test Subject 2', "", "this is the body 2"])
+	#s.sendmail(EMAIL_HOST_USER, to_email, msg)
+				
 	return render(request, 'mainApp/index.html', context)
 
 
 def login(request):
-	print "Entered login processing"
+	#print "Entered login processing"
 	# get username and password
 	email = request.POST['email'].strip()
 	password = request.POST['password'].strip()
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(bytearray(password, 'utf8'))
+	s.update(password)
 	password = s.hexdigest()
 
 	# search for account associated with Email
@@ -39,12 +50,12 @@ def login(request):
 		return redirect('../?login_success=False')
 
 def logout(request):
-	print "logout"
+	#print "logout"
 	request.session['user'] = None
 	return redirect('../?logout_success=True')
 
 def create_account(request):
-	print "Create account!"
+	#print "Create account!"
 	# get form data
 	first_name = request.POST['first_name'].strip()
 	last_name = request.POST['last_name'].strip()
@@ -61,7 +72,7 @@ def create_account(request):
 
 	# hash password
 	s = hashlib.sha3_256()
-	s.update(bytearray(password, 'utf8'))
+	s.update(password)
 	password = s.hexdigest()
 
 
@@ -77,15 +88,13 @@ def create_account(request):
 
 # redirects to the real page where they create an event
 def redir_create_event_page(request):
-	print "Redirect create event"
+	#print "Redirect create event"
 
 	if request.GET.get('email_in_use') == 'True':
 		context = {'event_name':request.GET.get('event_name'),
 					'first_name':request.GET.get('first_name'),
 					'last_name':request.GET.get('last_name'),
 					'email_in_use':'True',
-					'email':"",
-					'password':'',
 					'description':request.GET.get('description'),
 					'preffered_size':request.GET.get('preffered_size')
 					}
@@ -96,7 +105,7 @@ def redir_create_event_page(request):
 	return render(request, 'mainApp/createEvent.html', context)
 
 def create_event(request):
-	print "Create event"
+	#print "Create event"
 	# get form data
 	event_name = request.POST['event_name']
 	description = request.POST['description']
@@ -122,11 +131,11 @@ def create_event(request):
 		# if theres already an account with that email then return an error
 		if len(results) > 0:
 			return redirect('../?email_in_use=True&first_name='+first_name+'&last_name='+last_name+
-			'&preffered_size='+ preffered_size +'&event_name='+event_name + '&description='+description)
+			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
 
 		# hash password
 		s = hashlib.sha3_256()
-		s.update(bytearray(password, 'utf8'))
+		s.update(password)
 		password = s.hexdigest()
 
 		#create the user
