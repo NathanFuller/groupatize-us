@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from .models import *
 import hashlib
-import sha3
+# import sha3
 
 def index(request):
 	print "Main page!"
@@ -63,7 +63,7 @@ def create_account(request):
 	s = hashlib.sha3_256()
 	s.update(bytearray(password, 'utf8'))
 	password = s.hexdigest()
-	print s.hexdigest()
+
 
 	#create the user
 	user = User(name=full_name, email=email, password=password)
@@ -75,6 +75,7 @@ def create_account(request):
 	# return
 	return redirect('../?create_account=True')
 
+# redirects to the real page where they create an event
 def redir_create_event_page(request):
 	print "Redirect create event"
 
@@ -103,9 +104,9 @@ def create_event(request):
 	print "Creating event"
 	event = None
 
-	if request.session['user'] != None:
+	if request.session.get('user', None):
 		print "user logged in"
-		user = User.objects.filter(pk=request.session['user'])[0]
+		user = User.objects.filter(pk=request.session.get('user'))[0]
 		event = user.create_event(event_name, description, preffered_size)
 	else:
 		# get form data
@@ -173,7 +174,7 @@ def event_page(request, event_id=None):
 def dashboard_page(request):
 	print "Dashboard"
 
-	if request.session['user'] != None:
+	if request.session.get('user', None) != None:
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
 
@@ -193,8 +194,3 @@ def dashboard_page(request):
 		print "Not Logged in"
 
 	return redirect(index)
-
-
-
-
-
