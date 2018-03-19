@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User
+from .models import User, Event
 import hashlib
 import sha3
 
@@ -134,7 +134,7 @@ def create_event(request):
 			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
 
 		# hash password
-		s = hashlib.sha3_256()
+		s = hashlib.md5()
 		s.update(password)
 		password = s.hexdigest()
 
