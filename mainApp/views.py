@@ -111,8 +111,9 @@ def create_event(request):
 	preffered_size = request.POST['preffered_size']
 	print "Creating event"
 	event = None
-
-	if request.session['user'] != None:
+	print request.session.get('user', None)
+	
+	if request.session.get('user', None):
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
 		event = user.create_event(event_name, description, preffered_size)
