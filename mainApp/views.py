@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User
+from .models import User, Event, Project
 import hashlib
 from random import randint
 # import sha3

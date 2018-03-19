@@ -25,7 +25,7 @@ SECRET_KEY = 'x634l%4bs2u57sch1-*q_@7p8!c6grw@jp@c*j=y717)=tnvdl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [u'groupatize-fullernate.c9users.io', '127.0.0.1']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
