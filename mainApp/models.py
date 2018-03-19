@@ -10,6 +10,7 @@ class User(models.Model):
 	email = models.EmailField(max_length=250)
 	account = models.BooleanField(default=False)
 	password = models.CharField(max_length=260, default="")
+	salt = models.CharField(max_length=70, default="")
 	org_Events = models.CharField(max_length=2000, default="")
 	part_Events = models.CharField(max_length=2000, default="")
 
@@ -25,10 +26,12 @@ class User(models.Model):
 
 	# if you get compile error on sha3_256() try installing pysha3 with "$ pip install pysha3"
 	def change_password(self, new_password):
-		s = hashlib.sha3_256()
+		s = hashlib.md5()
 		# make the hash and set it
-		s.update(password)
+		salt = encodeID(randint(1000000000100000000010000000001000000000100000000010000000000000,9000000000100000000010000000001000000000100000000010000000000000))
+		s.update(password+salt)
 		self.password = s.hexdigest()
+		self.salt = salt
 		#self.password = new_password
 		# save
 		self.save()
@@ -90,7 +93,7 @@ class Event(models.Model):
 	# get project ideas as list
 	def get_project_ideas(self):
 		return self.project_ideas.split(",")[1:]
-		
+
 	# make a hash to use as ID
 	def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
 	    if num == 0:
@@ -102,8 +105,8 @@ class Event(models.Model):
 	        arr.append(alphabet[rem])
 	    arr.reverse()
 	    return ''.join(arr)
-		
-		
+
+
 
 	def __str__(self):
 		return self.name

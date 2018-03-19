@@ -4,17 +4,18 @@ from django.core.urlresolvers import reverse
 import smtplib
 from .models import User
 import hashlib
+from random import randint
 # import sha3
 
 def index(request):
 	#print "Main page!"
-	
+
 	context = {'login_success':request.GET.get('login_success'),
 				'logout_success':request.GET.get('logout_success'),
 				'email_in_use':request.GET.get('email_in_use'),
 				'create_account':request.GET.get('create_account')
 				}
-	
+
 	#s=smtplib.SMTP("smtp.gmail.com", 587)
 	#s.ehlo()
 	#s.starttls()
@@ -22,7 +23,7 @@ def index(request):
 	#to_email = "groupatizer@gmail.com"
 	#msg = '\r\n'.join(['Subject: Test Subject 2', "", "this is the body 2"])
 	#s.sendmail(EMAIL_HOST_USER, to_email, msg)
-				
+
 	return render(request, 'mainApp/index.html', context)
 
 
@@ -31,21 +32,25 @@ def login(request):
 	# get username and password
 	email = request.POST['email'].strip()
 	password = request.POST['password'].strip()
-
-	# hash password
-	s = hashlib.sha3_256()
-	s.update(password)
-	password = s.hexdigest()
-
 	# search for account associated with Email
 	results = User.objects.filter(email=email)
 
 	# if we found the account
-	if len(results) == 1 and results[0].password == password:
-		# log them in
-		request.session['user'] = results[0].pk
-		#send them back
-		return redirect('../?login_success=True')
+	if len(results) == 1:
+		user = results[0]
+		salt = user.salt
+
+		# hash password
+		s = hashlib.md5()
+		s.update(password+salt)
+		password = s.hexdigest()
+
+		if password == user.password:
+			# log them in
+			request.session['user'] = results[0].pk
+			#send them back
+			return redirect('../?login_success=True')
+		return redirect('../?login_success=False')
 	else:
 		return redirect('../?login_success=False')
 
@@ -71,13 +76,14 @@ def create_account(request):
 		return redirect('../?email_in_use=True')
 
 	# hash password
-	s = hashlib.sha3_256()
-	s.update(password)
+	s = hashlib.md5()
+	salt = encodeID(randint(1000000000100000000010000000001000000000100000000010000000000000,9000000000100000000010000000001000000000100000000010000000000000))
+	s.update(password + salt)
 	password = s.hexdigest()
 
 
 	#create the user
-	user = User(name=full_name, email=email, password=password)
+	user = User(name=full_name, email=email, password=password, salt=salt)
 	user.save()
 
 	#log the user in
@@ -134,12 +140,13 @@ def create_event(request):
 			'&email='+email+'&preffered_size'+ preffered_size + '&description='+description)
 
 		# hash password
-		s = hashlib.sha3_256()
-		s.update(password)
+		s = hashlib.md5()
+		salt = encodeID(randint(1000000000100000000010000000001000000000100000000010000000000000,9000000000100000000010000000001000000000100000000010000000000000))
+		s.update(password + salt)
 		password = s.hexdigest()
 
 		#create the user
-		user = User(name=full_name, email=email, password=password)
+		user = User(name=full_name, email=email, password=password, salt=salt)
 		user.save()
 
 		#log the user in
@@ -203,3 +210,16 @@ def dashboard_page(request):
 		print "Not Logged in"
 
 	return redirect(index)
+
+
+
+def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
+    if num == 0:
+        return alphabet[0]
+    arr = []
+    base = len(alphabet)
+    while num:
+        num, rem = divmod(num, base)
+        arr.append(alphabet[rem])
+    arr.reverse()
+    return ''.join(arr)
