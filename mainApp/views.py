@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User, Event
+from .models import User, Event, Project
 import hashlib
 from random import randint
 # import sha3
@@ -118,12 +118,7 @@ def create_event(request):
 	preffered_size = request.POST['preffered_size']
 	print "Creating event"
 	event = None
-<<<<<<< HEAD
 
-=======
-	print request.session.get('user', None)
-	
->>>>>>> 471251a994caebf74fc4aa41896ad32e4c10eb8c
 	if request.session.get('user', None):
 		print "user logged in"
 		user = User.objects.filter(pk=request.session.get('user'))[0]
@@ -146,12 +141,8 @@ def create_event(request):
 
 		# hash password
 		s = hashlib.md5()
-<<<<<<< HEAD
 		salt = encodeID(randint(1000000000100000000010000000001000000000100000000010000000000000,9000000000100000000010000000001000000000100000000010000000000000))
 		s.update(password + salt)
-=======
-		s.update(password)
->>>>>>> 471251a994caebf74fc4aa41896ad32e4c10eb8c
 		password = s.hexdigest()
 
 		#create the user
