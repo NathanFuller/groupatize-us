@@ -42,6 +42,7 @@
 				font-size: 5vw;
 				margin-top: 75px;
 			}
+			/* project idea styling */
 			.project_idea{
 				background-color: white;
 				border-radius: 5px;
@@ -51,7 +52,18 @@
 			.project_idea p{
 				color: black
 			}
+			/* edit project model styling */
+			.modal input, textarea{
+				margin: 8px;
+			}
 		</style>
+		<script type="text/javascript">
+			function editModal(id)
+			{
+				$('#editModal'+id).modal('show');
+				console.log('#editModal'+id)
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -97,6 +109,9 @@
 						<div class="project_idea">
 							<h2>{{idea.name}}</h2>
 							<p>{{idea.description}}</p>
+							{% if creator_access %}
+							<button type="button" name="button" class="btn btn-primary" onclick="editModal({{idea.pk}})">Edit Project</button>
+							{% endif %}
 						</div>
 					</div>
 					{% if forloop.counter0|divisibleby:3 %}
@@ -124,6 +139,35 @@
 					</div>
 				</div>
 			</div>
+		{% endif %}
+		{% if project_ideas and creator_access %}
+			{% for project in project_ideas %}
+			<div class="modal fade" id="editModal{{project.pk}}">
+		    	<div class="modal-dialog modal-md" role="dialog">
+		    		<div class="modal-content">
+		    			<div class="modal-body text-center">
+							<form action="#" method="post">
+								{% csrf_token %}
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Edit Project</h3>
+								<input required type="text" name="title" placeholder="Project Title" class="form-control" value="{{project.name}}">
+								<textarea name="description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+								<div class="container-fluid">
+									<div class="row">
+										<div class="col-lg-6">
+											<button type="submit" name="editProject" class="btn btn-primary">Submit Changes</button>
+										</div>
+										<div class="col-lg-6">
+											<button type="submit" name="deleteProject" class="btn btn-danger">Delete Project</button>
+										</div>
+									</div>
+								</div>
+							</form>
+		    			</div>
+		    		</div>
+		    	</div>
+		    </div>
+			{% endfor %}
 		{% endif %}
 	</body>
 </html>
