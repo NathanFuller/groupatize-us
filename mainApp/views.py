@@ -176,12 +176,22 @@ def event_page(request, event_id=None):
 		for key in project_ideas_keys:
 			project_ideas.append(Project.objects.filter(pk=key)[0])
 
-		# context info
-		context = {'found_event':True,
-					'event_name':event.name,
-					'event_description':event.description,
-					'preffered_size':event.ideal_group_size,
-					'project_ideas': project_ideas}
+		# if the user is logged in and they are the creator of the event
+		if request.session.get('user', None) and event.organizer == User.objects.get(pk=request.session['user']):
+			# context info
+			context = {'found_event':True,
+						'event_name':event.name,
+						'event_description':event.description,
+						'preffered_size':event.ideal_group_size,
+						'project_ideas': project_ideas,
+						'creator_access':True}
+		else:
+			# context info
+			context = {'found_event':True,
+						'event_name':event.name,
+						'event_description':event.description,
+						'preffered_size':event.ideal_group_size,
+						'project_ideas': project_ideas}
 	else:
 		context = {'found_event':False}
 
