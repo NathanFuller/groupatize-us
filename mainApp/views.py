@@ -166,6 +166,26 @@ def event_page(request, event_id=None):
 		# get the event from the list
 		event = events[0]
 
+		if request.POST:
+			if 'createProject' in request.POST:
+				project_name = request.POST['project_name']
+				project_description = request.POST['project_description']
+				event.add_project_idea(project_name, project_description,
+									   User.objects.get(pk=request.session['user']))
+			elif 'editProject' in request.POST:
+				project_id = request.POST['project_id']
+				project_name = request.POST['edit_name']
+				project_desc = request.POST['edit_desc']
+
+				p = Project.objects.filter(pk=project_id)[0]
+				p.name = project_name
+				p.description = project_desc
+				p.save()
+			elif 'deleteProject' in request.POST:
+				# project_id = request.POST['project_id']
+				# p = Project.objects.filter(pk=project_id)[0]
+				# p.delete()
+
 		# get the project keys associated with this event
 		project_ideas_keys = event.get_project_ideas()
 
