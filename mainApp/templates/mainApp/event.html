@@ -52,6 +52,13 @@
 			.project_idea p{
 				color: black
 			}
+            .add-img {
+                margin: 10px;
+            }
+            .add-img {
+                cursor: pointer;
+            }
+
 			/* edit project model styling */
 			.modal input, textarea{
 				margin: 8px;
@@ -62,6 +69,10 @@
 			{
 				$('#editModal'+id).modal('show');
 				console.log('#editModal'+id)
+			}
+			function addProjectModal()
+			{
+				$('#addProjectModal').modal('show');
 			}
 		</script>
 	</head>
@@ -124,12 +135,14 @@
 					<div class="col-md-2"></div>
 					<div class="col-md-8">
 						<div class="project_idea">
-							<h2>No project Ideas</h2>
+                            <h2>No project Ideas</h2>
 						</div>
 					</div>
 					<div class="col-md-2"></div>
 				</div>
 			{% endif %}
+            {% load static %}
+                <img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addProjectModal()">
 			</div>
 		{% else %}
 			<div class="container-fluid text-center">
@@ -150,8 +163,9 @@
 								{% csrf_token %}
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h3>Edit Project</h3>
-								<input required type="text" name="title" placeholder="Project Title" class="form-control" value="{{project.name}}">
-								<textarea name="description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+								<input required type="text" name="edit_name" placeholder="Project Name" class="form-control" value="{{project.name}}">
+								<textarea name="edit_desc" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+                                <input type="hidden" value="{{ project.pk }}" name="project_id" />
 								<div class="container-fluid">
 									<div class="row">
 										<div class="col-lg-6">
@@ -169,5 +183,23 @@
 		    </div>
 			{% endfor %}
 		{% endif %}
+
+    <!-- Sign up Modal -->
+		<div class="modal fade" id="addProjectModal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<form action="#" method="post">
+							{% csrf_token %}
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+		    				<h3>Create Project</h3>
+							<input required type="text" name="project_name" placeholder="Project Name" class="form-control">
+                            <textarea name="project_description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+							<button type="submit" name="createProject" class="btn btn-primary">Create</button>
+						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
 	</body>
 </html>
