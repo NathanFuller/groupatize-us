@@ -185,6 +185,7 @@ def event_page(request, event_id=None):
 				# project_id = request.POST['project_id']
 				# p = Project.objects.filter(pk=project_id)[0]
 				# p.delete()
+				pass
 
 		# get the project keys associated with this event
 		project_ideas_keys = event.get_project_ideas()
