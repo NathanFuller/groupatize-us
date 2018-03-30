@@ -167,14 +167,7 @@ def event_page(request, event_id=None):
 		event = events[0]
 
 		# get the project keys associated with this event
-		project_ideas_keys = event.get_project_ideas()
-
-		# set up an empty list to put the actual project idea objects in
-		project_ideas = []
-
-		# loop through the keys and put the acutal project object in the lsit
-		for key in project_ideas_keys:
-			project_ideas.append(Project.objects.filter(pk=key)[0])
+		project_ideas = event.get_project_ideas()
 
 		# if the user is logged in and they are the creator of the event
 		if request.session.get('user', None) and event.organizer == User.objects.get(pk=request.session['user']):
@@ -184,14 +177,16 @@ def event_page(request, event_id=None):
 						'event_description':event.description,
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
-						'creator_access':True}
+						'creator_access':True,
+						'event_id': event_id}
 		else:
 			# context info
 			context = {'found_event':True,
 						'event_name':event.name,
 						'event_description':event.description,
 						'preffered_size':event.ideal_group_size,
-						'project_ideas': project_ideas}
+						'project_ideas': project_ideas,
+						'event_id': event_id}
 	else:
 		context = {'found_event':False}
 
@@ -204,11 +199,7 @@ def dashboard_page(request):
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
 
-		event_keys = user.get_organized_events()
-		event_list = []
-
-		for key in event_keys:
-			event_list.append(Event.objects.filter(pk=key)[0])
+		event_list = user.get_organized_events()
 
 		# context info
 		if len(event_list) > 0:
@@ -220,6 +211,31 @@ def dashboard_page(request):
 		print "Not Logged in"
 
 	return redirect(index)
+
+
+def edit_project_idea(request):
+	# get post data
+	name = request.POST.get('title', None)
+	description = request.POST.get('description', None)
+	submit_type = request.POST.get('submit_type', None)
+	project_id = request.POST.get('projectID', None)
+	event_id = request.POST.get('event_id', None)
+
+
+
+	# get the project
+	project = Project.objects.get(id=project_id)
+
+	# if they want to delete it then delete it
+	if submit_type == 'delete':
+		project.delete()
+	# else edit it
+	elif submit_type == 'edit':
+		project.name = name
+		project.description = description
+		project.save()
+
+	return redirect('event_page', event_id)
 
 
 

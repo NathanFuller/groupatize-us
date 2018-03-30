@@ -11,7 +11,6 @@ class User(models.Model):
 	account = models.BooleanField(default=False)
 	password = models.CharField(max_length=260, default="")
 	salt = models.CharField(max_length=70, default="")
-	org_Events = models.CharField(max_length=2000, default="")
 	part_Events = models.CharField(max_length=2000, default="")
 
 	def join_event(self, event_ID):
@@ -52,12 +51,10 @@ class User(models.Model):
 
 	# get all the events the user has created in list form
 	def get_organized_events(self):
-		return self.org_Events.split(",")[1:]
+		return Event.objects.filter(organizer=self)
 
 	def __str__(self):
 		return self.name
-
-
 
 
 
@@ -70,7 +67,6 @@ class Event(models.Model):
 	allow_projects = models.BooleanField(default=True)
 	allow_voting = models.BooleanField(default=True)
 	participants = models.CharField(max_length=2000, default="")
-	project_ideas = models.CharField(max_length=2000, default="")
 	groups = models.CharField(max_length=2000, default="")
 
 	# add participant to CSV
@@ -82,17 +78,22 @@ class Event(models.Model):
 	def get_participants(self):
 		return self.participants.split(",")[1:]
 
+	# remove a participant from the list
+	def remove_participant(self, user):
+		participants = self.get_participants(self).remove(str(user))
+		self.participants = ','.join(participants)
+		self.save()
+
 	# add new project idea to CSV
 	def add_project_idea(self, name, description, user):
 		self.save()
 		project_idea = Project(name=name, description=description, proposer=user, event=self)
 		project_idea.save()
-		self.project_ideas = self.project_ideas + "," + str(project_idea.pk)
-		self.save()
 
 	# get project ideas as list
 	def get_project_ideas(self):
-		return self.project_ideas.split(",")[1:]
+		return Project.objects.filter(event=self)
+
 
 	# make a hash to use as ID
 	def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
@@ -105,7 +106,6 @@ class Event(models.Model):
 	        arr.append(alphabet[rem])
 	    arr.reverse()
 	    return ''.join(arr)
-
 
 
 	def __str__(self):
