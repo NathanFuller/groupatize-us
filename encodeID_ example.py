@@ -1,10 +1,4 @@
-import hashlib
-import sha3
 from random import randint
-
-s = hashlib.sha3_256()
-s.update("bob")
-print s.hexdigest()
 
 # make a hash to use as ID
 def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
