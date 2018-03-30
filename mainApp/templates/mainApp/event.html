@@ -146,7 +146,7 @@
 		    	<div class="modal-dialog modal-md" role="dialog">
 		    		<div class="modal-content">
 		    			<div class="modal-body text-center">
-							<form action="#" method="post">
+							<form action="{% url 'edit_project' %}" method="post">
 								{% csrf_token %}
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h3>Edit Project</h3>
@@ -155,13 +155,15 @@
 								<div class="container-fluid">
 									<div class="row">
 										<div class="col-lg-6">
-											<button type="submit" name="editProject" class="btn btn-primary">Submit Changes</button>
+											<button type="submit" name="submit_type" value="edit" class="btn btn-primary">Submit Changes</button>
 										</div>
 										<div class="col-lg-6">
-											<button type="submit" name="deleteProject" class="btn btn-danger">Delete Project</button>
+											<button type="submit" name="submit_type" value="delete" class="btn btn-danger">Delete Project</button>
 										</div>
 									</div>
 								</div>
+								<input type="hidden" name="projectID" value="{{project.pk}}">
+								<input type="hidden" name="event_id" value="{{event_id}}">
 							</form>
 		    			</div>
 		    		</div>
