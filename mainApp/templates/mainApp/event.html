@@ -48,6 +48,7 @@
 				border-radius: 5px;
 				padding-top: 10px;
 				padding-bottom: 10px;
+                margin-bottom: 20px;
 			}
 			.project_idea p{
 				color: black
@@ -125,7 +126,7 @@
 							{% endif %}
 						</div>
 					</div>
-					{% if forloop.counter0|divisibleby:3 %}
+					{% if forloop.counter|divisibleby:3 %}
 						</div><div class="row">
 					{% endif %}
 				{% endfor %}
@@ -163,8 +164,8 @@
 								{% csrf_token %}
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h3>Edit Project</h3>
-								<input required type="text" name="edit_name" placeholder="Project Name" class="form-control" value="{{project.name}}">
-								<textarea name="edit_desc" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+								<input required type="text" name="title" placeholder="Project Name" class="form-control" value="{{project.name}}">
+								<textarea name="description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
                                 <input type="hidden" value="{{ project.pk }}" name="project_id" />
 								<div class="container-fluid">
 									<div class="row">
@@ -186,17 +187,16 @@
 			{% endfor %}
 		{% endif %}
 
-    <!-- Sign up Modal -->
-		<div class="modal fade" id="addProjectModal">
+        <div class="modal fade" id="addProjectModal">
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">
 	    			<div class="modal-body text-center">
-						<form action="#" method="post">
+						<form action="" method="post">
 							{% csrf_token %}
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 		    				<h3>Create Project</h3>
-							<input required type="text" name="project_name" placeholder="Project Name" class="form-control">
-                            <textarea name="project_description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
+							<input required type="text" name="title" placeholder="Project Name" class="form-control">
+                            <textarea name="description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
 							<button type="submit" name="createProject" class="btn btn-primary">Create</button>
 						</form>
 	    			</div>
