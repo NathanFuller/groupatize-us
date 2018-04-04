@@ -62,27 +62,12 @@ class Event(models.Model):
 	name = models.CharField(max_length=250)
 	eventID = models.CharField(max_length=10)
 	description = models.CharField(max_length=2000, default="null")
-	organizer = models.ForeignKey(User)
+	organizer = models.ForeignKey(User, related_name='organizer')
 	ideal_group_size = models.IntegerField(default=4)
 	allow_projects = models.BooleanField(default=True)
 	allow_voting = models.BooleanField(default=True)
-	participants = models.CharField(max_length=2000, default="")
+	participants = models.ManyToManyField(User, related_name='participants')
 	groups = models.CharField(max_length=2000, default="")
-
-	# add participant to CSV
-	def add_participant(self, user):
-		self.participants = self.participants + "," + str(user.pk)
-		self.save()
-
-	# get participants as list
-	def get_participants(self):
-		return self.participants.split(",")[1:]
-
-	# remove a participant from the list
-	def remove_participant(self, user):
-		participants = self.get_participants(self).remove(str(user))
-		self.participants = ','.join(participants)
-		self.save()
 
 	# add new project idea to CSV
 	def add_project_idea(self, name, description, user):
@@ -93,7 +78,6 @@ class Event(models.Model):
 	# get project ideas as list
 	def get_project_ideas(self):
 		return Project.objects.filter(event=self)
-
 
 	# make a hash to use as ID
 	def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
