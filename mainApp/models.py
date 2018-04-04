@@ -37,16 +37,10 @@ class User(models.Model):
 
 	# create an event
 	def create_event(self, event_name, event_description, group_size):
-		# save the user first
-		self.save()
 		# create the event
 		new_event = Event(name=event_name, description=event_description, ideal_group_size=group_size, organizer=self)
 		# save the event
 		new_event.save()
-		# update the events the user has created
-		self.org_Events = self.org_Events + "," + str(new_event.pk)
-		# save user again
-		self.save()
 		return new_event
 
 	# get all the events the user has created in list form
