@@ -143,6 +143,7 @@
 			{% endif %}
             {% load static %}
                 <img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addProjectModal()">
+                <a href="{% url 'rate_event' event_id=event_id %}">Rate project ideas</a>
 			</div>
 		{% else %}
 			<div class="container-fluid text-center">

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+		<script src="https://use.fontawesome.com/c369fa3dc3.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Rate Projects</title>
+		<style media="screen">
+			body{
+				font-family: 'Raleway', sans-serif;
+				background-attachment: fixed;
+				/*background-color: #0C78E8;*/
+				background: #3a7bd5;  /* fallback for old browsers */
+				background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);  /* Chrome 10-25, Safari 5.1-6 */
+				background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+			/* Start navbar styling */
+			.navbar.transparent.navbar-inverse .navbar-inner {
+				background: rgba(0,0,0,0.4);
+			}
+			nav ul li {
+				margin-left:10px;
+				margin-right: 10px;
+			}
+			i {
+				color:white;
+			}
+			.fa {
+				font-size: 3vw;
+			}
+			/* End navbar styling */
+			h1, p{
+				color: white;
+			}
+			h1{
+				font-size: 5vw;
+				margin-top: 75px;
+			}
+			/* project idea styling */
+			.project_idea{
+				background-color: white;
+				border-radius: 5px;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+			.project_idea p{
+				color: black
+			}
+            .add-img {
+                margin: 10px;
+            }
+            .add-img {
+                cursor: pointer;
+            }
+
+			/* edit project model styling */
+			.modal input, textarea{
+				margin: 8px;
+			}
+		</style>
+		<script type="text/javascript">
+			function editModal(id)
+			{
+				$('#editModal'+id).modal('show');
+				console.log('#editModal'+id)
+			}
+			function addProjectModal()
+			{
+				$('#addProjectModal').modal('show');
+			}
+		</script>
+	</head>
+	<body>
+	<a href = "{% url 'event_page' event_id=event_id %}">Return to event page without rating</a>
+	</body>
+</html>

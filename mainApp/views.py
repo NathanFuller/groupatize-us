@@ -159,7 +159,7 @@ def create_event(request):
 def event_page(request, event_id=None):
 	# find the event
 	events = Event.objects.filter(pk=event_id)
-	context = {}
+	context = {'event_id':event_id}
 
 	# if we found the event
 	if len(events) == 1:
@@ -258,6 +258,11 @@ def edit_project_idea(request):
 
 	return redirect('event_page', event_id)
 
+
+def rate_project_ideas(request, event_id):
+	print "You tried to rate projects on ", event_id
+	context = {'event_id':event_id}
+	return render(request, 'mainApp/rateProjects.html', context)
 
 
 def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
