@@ -247,7 +247,23 @@ def edit_project_idea(request):
 
 def rate_project_ideas(request, event_id):
 	print "You tried to rate projects on ", event_id
-	context = {'event_id':event_id}
+	
+	# find the event
+	events = Event.objects.filter(pk=event_id)
+	event = events[0]
+	
+	# get the project keys associated with this event
+	project_ideas = event.get_project_ideas()
+	
+	# context info
+	context = {'found_event':True,
+				'event_name':event.name,
+				'event_description':event.description,
+				'preffered_size':event.ideal_group_size,
+				'project_ideas': project_ideas,
+				'event_id': event_id}
+	
+	
 	return render(request, 'mainApp/rateProjects.html', context)
 
 
