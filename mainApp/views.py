@@ -13,7 +13,8 @@ def index(request):
 	context = {'login_success':request.GET.get('login_success'),
 				'logout_success':request.GET.get('logout_success'),
 				'email_in_use':request.GET.get('email_in_use'),
-				'create_account':request.GET.get('create_account')
+				'create_account':request.GET.get('create_account'),
+				'event_joined':request.GET.get('event_joined')
 				}
 
 	#s=smtplib.SMTP("smtp.gmail.com", 587)
@@ -71,7 +72,7 @@ def create_account(request):
 	# check if that email is already associated with an account
 	results = User.objects.filter(email=email)
 
-	# if theres already an account with that email then return an error
+	# if there's already an account with that email then return an error
 	if len(results) > 0:
 		return redirect('../?email_in_use=True')
 
@@ -247,23 +248,7 @@ def edit_project_idea(request):
 
 def rate_project_ideas(request, event_id):
 	print "You tried to rate projects on ", event_id
-	
-	# find the event
-	events = Event.objects.filter(pk=event_id)
-	event = events[0]
-	
-	# get the project keys associated with this event
-	project_ideas = event.get_project_ideas()
-	
-	# context info
-	context = {'found_event':True,
-				'event_name':event.name,
-				'event_description':event.description,
-				'preffered_size':event.ideal_group_size,
-				'project_ideas': project_ideas,
-				'event_id': event_id}
-	
-	
+	context = {'event_id':event_id}
 	return render(request, 'mainApp/rateProjects.html', context)
 
 
@@ -277,3 +262,27 @@ def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUV
         arr.append(alphabet[rem])
     arr.reverse()
     return ''.join(arr)
+    
+def locate_event(request):
+	#get Event ID
+	event_id = request.POST.get("groupHash")
+	results = Event.objects.filter(id=event_id)
+	
+	#if we found the event
+	if len(results) == 1:
+		results = results[0]
+		
+		return render(request, 'mainApp/index.html', {'results':results, 'found':True, 'have_results':True})
+	else:
+		return render(request, 'mainApp/index.html', {'results':results, 'found':False, 'have_results':True})
+		
+def add_joined_event(request):
+	if request.session.user == None:
+		login(request)
+	ID = request.session.get('new_event')
+	request.session.user.join_event(ID)
+	return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
+	
+		
+	
+	

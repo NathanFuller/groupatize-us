@@ -89,7 +89,19 @@
 			{
 				$('#signUpModal').modal('show');
 			}
+			
+			function showJoinModal()
+			{
+				{% if request.session.user == None %}
+					$('#signInModal').modal('show');
+				{% else %}
+				
+					$('#joinModal').modal('show');
+				{% endif %}
+			}
+			
 		</script>
+		
 		<!-- If its a redirect off a login success-->
 		{% if login_success == 'True' %}
 			<script type='text/javascript'>
@@ -134,7 +146,27 @@
 				});
 			</script>
 		{% endif %}
-
+		
+		<!-- If it's a redirect to the join confirmation -->
+		temp1 = {{have_results}}
+		{% if temp1 %}
+			temp = {{found}}
+			{% if  temp  %}
+				<script type='text/javascript'>
+					$(window).on('load',function(){
+						$('#joinModal').modal('show');
+					});
+				</script>
+			{% else %}
+				<script type='text/javascript'>
+					$(window).on('load',function(){
+						$('#no_event_found').modal('show');
+					});
+				</script>
+		{% endif %}
+		{% endif %}
+		
+			
 
 	</head>
 	<body>
@@ -193,9 +225,12 @@
 				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
-					<h4>Join an Event</h4>
-					<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
-					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Join</button>
+					<form action = "join/" method="post">
+						{% csrf_token %}
+							<h4>Join an Event</h4>
+							<input required type="text" name="groupHash" placeholder="Group Key" class="form-control"> <br>
+							<button type="submit" class="btn btn-outline-primary btn-block" onclick="showJoinModal()">Join</button>
+					</form>
 				</div>
 				<div class="col-md-1"></div>
 			</div>
@@ -301,6 +336,36 @@
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4>Success!</h4>
 						<p>You have been signed out</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+	    
+	    <!-- join event modal -->
+	    <div class="modal fade" id="joinModal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+	    				<form action="addjoin/", method="post">
+							{% csrf_token %}
+							<h3>Join Event</h3>
+							<h5>{{results.name}}</h5>
+							<h6>{{results.description}} </h6>
+							<button type="submit" name="button" class="btn btn-primary">Join</button>
+							<button type="button" name="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+	    <!-- No event found with the ID provided -->
+		<div class="modal fade" id="no_event_found">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<p>There aren't any events with that ID</p>
+						<button type="button" name="button" class="btn btn-primary" data-dismiss="modal">Return</button>
 	    			</div>
 	    		</div>
 	    	</div>
