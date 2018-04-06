@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.db import models
 import hashlib
+import sha3
 from random import randint
 
 
@@ -17,7 +18,6 @@ class User(models.Model):
 		self.part_Events = self.part_Events + "," + event_ID
 		# save
 		self.save()
-		
 
 	# get all the events the user is a participant of in list form
 	def get_participant_events(self):
