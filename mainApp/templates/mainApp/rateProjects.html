@@ -121,9 +121,7 @@
 						<div class="project_idea">
 							<h2>{{idea.name}}</h2>
 							<p>{{idea.description}}</p>
-							{% if creator_access %}
-							<button type="button" name="button" class="btn btn-primary" onclick="editModal({{idea.pk}})">Edit Project</button>
-							{% endif %}
+							<input id="{{idea.name}}" type="number">
 						</div>
 					</div>
 					{% if forloop.counter|divisibleby:3 %}
@@ -131,6 +129,7 @@
 					{% endif %}
 				{% endfor %}
 				</div>
+				<input type="submit" value="Submit">
 			{% else %}
 				<div class="row">
 					<div class="col-md-2"></div>
