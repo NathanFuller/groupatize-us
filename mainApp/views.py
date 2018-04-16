@@ -160,6 +160,9 @@ def event_page(request, event_id=None):
 	# find the event
 	events = Event.objects.filter(pk=event_id)
 	context = {'event_id':event_id}
+	
+	if request.GET.get('rate_success', None) == 'True':
+		print "Ratings submitted successfully"
 
 	# if we found the event
 	if len(events) == 1:
@@ -262,9 +265,21 @@ def rate_project_ideas(request, event_id):
 				'preffered_size':event.ideal_group_size,
 				'project_ideas': project_ideas,
 				'event_id': event_id}
+				
+	if request.POST.get('test', None):
+		print request.POST['nonexistant']
 	
 	
 	return render(request, 'mainApp/rateProjects.html', context)
+	
+	
+def submit_ratings(request, event_id): #probably something else too
+	user = User.objects.get(request.session.get('user', None))
+	
+	#loop through projects of event and call function from user
+
+
+	return redirect('../?rate_success=True')
 
 
 def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):

@@ -42,6 +42,14 @@ class User(models.Model):
 		# save the event
 		new_event.save()
 		return new_event
+		
+		
+	#rate a project idea
+	def rate_project(self, project_id, my_rating):
+		new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating)
+		
+		new_rating.save()
+		return new_rating
 
 	# get all the events the user has created in list form
 	def get_organized_events(self):
