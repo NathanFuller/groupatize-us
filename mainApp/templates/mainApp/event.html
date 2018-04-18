@@ -186,6 +186,10 @@
 		    	</div>
 		    </div>
 			{% endfor %}
+			<form action="../../mainapp/groupatize/" method="post">
+				{% csrf_token %}
+				<button type="submit" name="groupatize" class="btn btn-primary">Groupatize</button>
+			</form>
 		{% endif %}
 
         <div class="modal fade" id="addProjectModal">

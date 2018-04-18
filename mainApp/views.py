@@ -6,6 +6,7 @@ from .models import User, Event, Project
 import hashlib
 from random import randint
 # import sha3
+from django.http import HttpResponse
 
 def index(request):
 	#print "Main page!"
@@ -53,6 +54,18 @@ def login(request):
 		return redirect('../?login_success=False')
 	else:
 		return redirect('../?login_success=False')
+
+def groupatize(request):
+        referer = request.META.get('HTTP_REFERER')
+        if not referer: return redirect('../')
+        path = referer.split("/")
+        event_id = path[len(path)-1]
+	events = Event.objects.filter(pk=event_id)
+	if len(events) == 1: event = events[0]
+
+        res = event.name, "\nIdeal group size: ", event.ideal_group_size
+        return HttpResponse(res)
+	
 
 def logout(request):
 	#print "logout"
