@@ -161,8 +161,7 @@ def event_page(request, event_id=None):
 	events = Event.objects.filter(pk=event_id)
 	context = {'event_id':event_id}
 	
-	if request.GET.get('rate_success', None) == 'True':
-		print "Ratings submitted successfully"
+	
 
 	# if we found the event
 	if len(events) == 1:
@@ -199,6 +198,10 @@ def event_page(request, event_id=None):
 						'event_id': event_id}
 	else:
 		context = {'found_event':False}
+	
+	if request.GET.get('rate_success', None) == 'True':
+		print "Ratings submitted successfully"
+		context['rated'] = 'True'
 
 	return render(request, 'mainApp/event.html', context)
 
@@ -274,9 +277,16 @@ def rate_project_ideas(request, event_id):
 	
 	
 def submit_ratings(request, event_id): #probably something else too
-	user = User.objects.get(request.session.get('user', None))
+	user = User.objects.get(pk=request.session.get('user', None))
 	
 	#loop through projects of event and call function from user
+	for key in request.POST: #rate_project(self, project_id, my_rating):
+		if (key != 'csrfmiddlewaretoken'):
+			rating = request.POST[key]
+			project = Project.objects.get(pk=key)
+			print "Rate project ", key, " with rating ", rating
+			user.rate_project(project, rating)
+		
 
 
 	return redirect('../?rate_success=True')
