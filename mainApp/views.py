@@ -292,13 +292,16 @@ def rate_project_ideas(request, event_id):
 def submit_ratings(request, event_id): #probably something else too
 	user = User.objects.get(pk=request.session.get('user', None))
 	
+	events = Event.objects.filter(pk=event_id)
+	event = events[0]
+	
 	#loop through projects of event and call function from user
 	for key in request.POST: #rate_project(self, project_id, my_rating):
 		if (key != 'csrfmiddlewaretoken'):
 			rating = request.POST[key]
 			project = Project.objects.get(pk=key)
 			print "Rate project ", key, " with rating ", rating
-			user.rate_project(project, rating)
+			user.rate_project(project, rating, event)
 		
 
 

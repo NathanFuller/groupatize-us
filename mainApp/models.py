@@ -45,8 +45,8 @@ class User(models.Model):
 		
 		
 	#rate a project idea
-	def rate_project(self, project_id, my_rating):
-		new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating)
+	def rate_project(self, project_id, my_rating, event_id):
+		new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating, event=event_id)
 		
 		new_rating.save()
 		return new_rating
@@ -111,3 +111,4 @@ class U2P_Relation(models.Model):
 	rater = models.ForeignKey(User)
 	project = models.ForeignKey(Project)
 	rating = models.IntegerField()
+	event = models.ForeignKey(Event)
