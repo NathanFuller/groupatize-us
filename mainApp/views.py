@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User, Event, Project
+from .models import User, Event, Project, U2P_Relation
 import hashlib
 from random import randint
 # import sha3
@@ -61,9 +61,15 @@ def groupatize(request):
         path = referer.split("/")
         event_id = path[len(path)-1]
 	events = Event.objects.filter(pk=event_id)
-	if len(events) == 1: event = events[0]
-
-        res = event.name, "\nIdeal group size: ", event.ideal_group_size
+	if len(events) == 1: ev = events[0]
+	
+	u2p_list = U2P_Relation.objects.filter(event=event_id)
+	
+	for u2p in u2p_list:
+		print str(u2p.rater) + "\t" + str(u2p.rating) + "\t" + str(u2p.project.name) + "\n"
+	
+	
+        res = ev.name, "\nIdeal group size: ", ev.ideal_group_size
         return HttpResponse(res)
 	
 
@@ -294,6 +300,7 @@ def submit_ratings(request, event_id): #probably something else too
 	
 	events = Event.objects.filter(pk=event_id)
 	event = events[0]
+	
 	
 	#loop through projects of event and call function from user
 	for key in request.POST: #rate_project(self, project_id, my_rating):

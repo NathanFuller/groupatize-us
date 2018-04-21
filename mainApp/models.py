@@ -46,10 +46,17 @@ class User(models.Model):
 		
 	#rate a project idea
 	def rate_project(self, project_id, my_rating, event_id):
-		new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating, event=event_id)
-		
-		new_rating.save()
-		return new_rating
+		user_ratings = U2P_Relation.objects.filter(rater=self)
+		conflicting_ratings = user_ratings.filter(project=project_id)
+		if len(conflicting_ratings) > 0:
+			print "Conflict: ", self, " has already rated project", project_id.name, ". Updated rating to: ", my_rating
+			conflicting_ratings[0].rating = my_rating
+			conflicting_ratings[0].save()
+			return conflicting_ratings[0]
+		else:
+			new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating, event=event_id)
+			new_rating.save()
+			return new_rating
 
 	# get all the events the user has created in list form
 	def get_organized_events(self):
