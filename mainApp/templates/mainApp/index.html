@@ -193,9 +193,12 @@
 				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-4 startOption">
-					<h4>Join an Event</h4>
-					<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
-					<button type="button" name="submit" class="btn btn-outline-primary btn-block">Join</button>
+					<form action="join/" method="post">
+						{% csrf_token %}
+						<h4>Join an Event</h4>
+						<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
+						<button type="submit" class="btn btn-outline-primary btn-block">Join</button>
+					</form>
 				</div>
 				<div class="col-md-1"></div>
 			</div>

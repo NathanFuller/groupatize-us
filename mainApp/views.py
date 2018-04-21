@@ -129,6 +129,20 @@ def redir_create_event_page(request):
 		context = {'event_name':event_name}
 	return render(request, 'mainApp/createEvent.html', context)
 
+def join_event(request):
+	event_id = request.POST['groupHash']
+	events = Event.objects.filter(pk=event_id)
+	if len(events) == 1:
+		event = events[0]
+		if request.session.get('user', None) != None:
+			user = User.objects.get(pk=request.session['user'])
+			user.join_event(event)
+			return redirect("../event/" + event_id + "?joined=true")
+		else: 
+			return redirect("../?Login=false")
+	else:
+		return redirect("../event/" + event_id)
+	
 def create_event(request):
 	#print "Create event"
 	# get form data

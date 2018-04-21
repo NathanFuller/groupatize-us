@@ -13,11 +13,13 @@ class User(models.Model):
 	salt = models.CharField(max_length=70, default="")
 	part_Events = models.CharField(max_length=2000, default="")
 
-	def join_event(self, event_ID):
+	def join_event(self, event):
 		# assuming the list is going to be a CSV
-		self.part_Events = self.part_Events + "," + event_ID
+		self.part_Events = self.part_Events + "," + str(event.id)
 		# save
 		self.save()
+		event.participants.add(self)
+		event.save()
 
 	# get all the events the user is a participant of in list form
 	def get_participant_events(self):
