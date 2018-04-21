@@ -103,3 +103,9 @@ class U2P_Relation(models.Model):
 	rater = models.ForeignKey(User)
 	project = models.ForeignKey(Project)
 	rating = models.IntegerField()
+
+
+class Group(models.Model):
+	event = models.ForeignKey(Event)
+	project = models.ForeignKey(Project)
+	users = models.ManyToManyField(User, related_name='group_participants')

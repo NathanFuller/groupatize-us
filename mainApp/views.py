@@ -2,9 +2,20 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User, Event, Project
+from .models import User, Event, Project, Group
 import hashlib
 from random import randint
+
+
+EMAIL_HOST_USER = 'groupatizer@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'gr0up4t1z3r'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 465
+
+
 # import sha3
 
 def index(request):
@@ -165,6 +176,7 @@ def event_page(request, event_id=None):
 	if len(events) == 1:
 		# get the event from the list
 		event = events[0]
+		send_group_emails(event)
 
 		if request.POST:
 			if 'createProject' in request.POST:
@@ -247,14 +259,14 @@ def edit_project_idea(request):
 
 def rate_project_ideas(request, event_id):
 	print "You tried to rate projects on ", event_id
-	
+
 	# find the event
 	events = Event.objects.filter(pk=event_id)
 	event = events[0]
-	
+
 	# get the project keys associated with this event
 	project_ideas = event.get_project_ideas()
-	
+
 	# context info
 	context = {'found_event':True,
 				'event_name':event.name,
@@ -262,8 +274,8 @@ def rate_project_ideas(request, event_id):
 				'preffered_size':event.ideal_group_size,
 				'project_ideas': project_ideas,
 				'event_id': event_id}
-	
-	
+
+
 	return render(request, 'mainApp/rateProjects.html', context)
 
 
@@ -277,3 +289,22 @@ def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUV
         arr.append(alphabet[rem])
     arr.reverse()
     return ''.join(arr)
+
+
+def send_group_emails(event):
+	groups = Group.objects.filter(event=event)
+	s=smtplib.SMTP("smtp.gmail.com", 587)
+	s.ehlo()
+	s.starttls()
+	s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+
+	for group in groups:
+		project = group.project
+		for user in group.users.all():
+			to_email = user.email
+			body = "You have been sorted into the following project: " + project.name + " \n\nProject Description: " +project.description +"\n\n\n"+ "Your group is as follows: \n\n"
+			for user_send in group.users.all():
+				if user.pk != user_send.pk:
+					body += (user_send.name + " : Their email is " + user_send.email + "\n")
+			msg = '\r\n'.join(['Subject: You have been sorted!', "", body])
+			s.sendmail(EMAIL_HOST_USER, to_email, msg)
