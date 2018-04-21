@@ -188,6 +188,7 @@
 			{% endfor %}
 			<form action="../../mainapp/groupatize/" method="post">
 				{% csrf_token %}
+				<input type="hidden" name="event_id" value="{{event_id}}">
 				<button type="submit" name="groupatize" class="btn btn-primary">Groupatize</button>
 			</form>
 		{% endif %}
