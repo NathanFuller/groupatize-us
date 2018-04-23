@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User, Event, Project, Group
+from .models import User, Event, Project, U2P_Relation
 import hashlib
 from random import randint
 
@@ -17,6 +17,9 @@ EMAIL_PORT = 465
 
 
 # import sha3
+from django.http import HttpResponse
+import numpy as np
+from scipy.optimize import linear_sum_assignment
 
 def index(request):
 	#print "Main page!"
@@ -64,6 +67,78 @@ def login(request):
 		return redirect('../?login_success=False')
 	else:
 		return redirect('../?login_success=False')
+
+def groupatize(request):
+	#Get the event
+	event_id = request.POST.get('event_id', None)
+	events = Event.objects.filter(pk=event_id)
+	if len(events) == 1:
+		event = events[0]
+
+		#Get the U2P_Relations
+		u2p_list = U2P_Relation.objects.filter(event=event_id)
+		user_list = []
+		project_list = []
+		project_popularity = {}
+
+		#Strip out the user_list, project_popularity from the U2P_Relations
+		for u2p in u2p_list:
+			#print str(u2p.rater) + "\t" + str(u2p.rating) + "\t" + str(u2p.project.name) + "\n"
+			if u2p.rater not in user_list:
+				user_list.append(u2p.rater)
+			if u2p.project not in project_list:
+				project_list.append(u2p.project)
+				project_popularity[u2p.project] = 0
+			project_popularity[u2p.project] += u2p.rating
+
+		#Determine the number of projects
+		num_proj = len(user_list)/event.ideal_group_size
+		proj_pop_sorted = sorted(project_popularity.items(), key=lambda x: x[1], reverse=True)
+		selected_proj = [proj_pop_sorted[proj][0] for proj in xrange(num_proj)]
+
+		#Determine how many people will be on each project
+		group_sizes = {}
+		for x in xrange(num_proj): group_sizes[x] = 0
+		for x in xrange(len(user_list)): group_sizes[x%num_proj] += 1
+		group_sizes = group_sizes.values()
+
+		#Make duplicates of the projects for each position
+		sel_proj_pos = []
+		for proj in xrange(num_proj):
+			for num_pos in xrange(group_sizes[proj]):
+				sel_proj_pos.append(selected_proj[proj])
+
+		#Construct the ratings_matrix
+		ratings_array = []
+		for user in user_list:
+			user_ratings = []
+			for position in sel_proj_pos:
+				user_ratings.append(u2p_list.filter(rater=user).filter(project=position)[0].rating)
+			ratings_array.append(user_ratings)
+		ratings_matrix = np.array(ratings_array)
+
+		#Print some stuff to show that it works
+		print "Ratings Matrix"
+		print ratings_matrix
+		print "\n"
+		ratings_matrix *= -1
+		row_ind, col_ind = linear_sum_assignment(ratings_matrix)
+
+		print "Users:"
+		for user in user_list:
+			print "\t", user
+
+		print "Tasks:"
+		for task in sel_proj_pos:
+			print "\t", task.name
+
+		print "\nSatisfaction ", ratings_matrix[row_ind, col_ind].sum() * -1 / len(user_list) * 10, "%"
+		print "user ", row_ind
+		print "task ", col_ind
+
+		return HttpResponse("Look at the console for now.")
+	else:
+		return redirect("../")
 
 def logout(request):
 	#print "logout"
@@ -121,6 +196,20 @@ def redir_create_event_page(request):
 		context = {'event_name':event_name}
 	return render(request, 'mainApp/createEvent.html', context)
 
+def join_event(request):
+	event_id = request.POST['groupHash']
+	events = Event.objects.filter(pk=event_id)
+	if len(events) == 1:
+		event = events[0]
+		if request.session.get('user', None) != None:
+			user = User.objects.get(pk=request.session['user'])
+			user.join_event(event)
+			return redirect("../event/" + event_id + "?joined=true")
+		else:
+			return redirect("../?Login=false")
+	else:
+		return redirect("../event/" + event_id)
+
 def create_event(request):
 	#print "Create event"
 	# get form data
@@ -172,11 +261,13 @@ def event_page(request, event_id=None):
 	events = Event.objects.filter(pk=event_id)
 	context = {'event_id':event_id}
 
+
+
 	# if we found the event
 	if len(events) == 1:
 		# get the event from the list
 		event = events[0]
-		send_group_emails(event)
+		#send_group_emails(event)
 
 		if request.POST:
 			if 'createProject' in request.POST:
@@ -208,6 +299,10 @@ def event_page(request, event_id=None):
 						'event_id': event_id}
 	else:
 		context = {'found_event':False}
+
+	if request.GET.get('rate_success', None) == 'True':
+		print "Ratings submitted successfully"
+		context['rated'] = 'True'
 
 	return render(request, 'mainApp/event.html', context)
 
@@ -277,6 +372,26 @@ def rate_project_ideas(request, event_id):
 
 
 	return render(request, 'mainApp/rateProjects.html', context)
+
+
+def submit_ratings(request, event_id): #probably something else too
+	user = User.objects.get(pk=request.session.get('user', None))
+
+	events = Event.objects.filter(pk=event_id)
+	event = events[0]
+
+
+	#loop through projects of event and call function from user
+	for key in request.POST: #rate_project(self, project_id, my_rating):
+		if (key != 'csrfmiddlewaretoken'):
+			rating = request.POST[key]
+			project = Project.objects.get(pk=key)
+			print "Rate project ", key, " with rating ", rating
+			user.rate_project(project, rating, event)
+
+
+
+	return redirect('../?rate_success=True')
 
 
 def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):

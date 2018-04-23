@@ -13,11 +13,13 @@ class User(models.Model):
 	salt = models.CharField(max_length=70, default="")
 	part_Events = models.CharField(max_length=2000, default="")
 
-	def join_event(self, event_ID):
+	def join_event(self, event):
 		# assuming the list is going to be a CSV
-		self.part_Events = self.part_Events + "," + event_ID
+		self.part_Events = self.part_Events + "," + str(event.id)
 		# save
 		self.save()
+		event.participants.add(self)
+		event.save()
 
 	# get all the events the user is a participant of in list form
 	def get_participant_events(self):
@@ -42,6 +44,21 @@ class User(models.Model):
 		# save the event
 		new_event.save()
 		return new_event
+
+
+	#rate a project idea
+	def rate_project(self, project_id, my_rating, event_id):
+		user_ratings = U2P_Relation.objects.filter(rater=self)
+		conflicting_ratings = user_ratings.filter(project=project_id)
+		if len(conflicting_ratings) > 0:
+			print "Conflict: ", self, " has already rated project", project_id.name, ". Updated rating to: ", my_rating
+			conflicting_ratings[0].rating = my_rating
+			conflicting_ratings[0].save()
+			return conflicting_ratings[0]
+		else:
+			new_rating = U2P_Relation(rater=self, project=project_id, rating=my_rating, event=event_id)
+			new_rating.save()
+			return new_rating
 
 	# get all the events the user has created in list form
 	def get_organized_events(self):

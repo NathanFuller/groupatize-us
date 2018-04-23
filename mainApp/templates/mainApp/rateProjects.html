@@ -63,6 +63,10 @@
 			.modal input, textarea{
 				margin: 8px;
 			}
+			
+			label{
+				padding-right:8px;
+			}
 		</style>
 		<script type="text/javascript">
 			function editModal(id)
@@ -75,6 +79,14 @@
 				$('#addProjectModal').modal('show');
 			}
 		</script>
+		
+		{% if rated == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_rating').modal('show');
+				});
+			</script>
+		{% endif %}
 	</head>
 	<body>
 	<a href = "{% url 'event_page' event_id=event_id %}">Return to event page without rating</a>
@@ -115,21 +127,45 @@
 			</div>
 			<div class="container-fluid text-center">
 			{% if project_ideas %}
+				<form action="./submitratings/" method="post">
+					{% csrf_token %}
 				<div class="row">
 				{% for idea in project_ideas %}
 					<div class="col-md-4">
 						<div class="project_idea">
 							<h2>{{idea.name}}</h2>
 							<p>{{idea.description}}</p>
-							<input id="{{idea.name}}" type="number">
+							<input type="radio" id="{{idea.id}}1" name="{{idea.id}}" value="1"> 
+							<label for="{{idea.id}}1"> 1</label>
+							<input type="radio" id="{{idea.id}}2" name="{{idea.id}}" value="2"> 
+							<label for="{{idea.id}}2"> 2</label>
+							<input type="radio" id="{{idea.id}}3" name="{{idea.id}}" value="3"> 
+							<label for="{{idea.id}}3"> 3</label>
+							<input type="radio" id="{{idea.id}}4" name="{{idea.id}}" value="4"> 
+							<label for="{{idea.id}}4"> 4</label>
+							<input type="radio" id="{{idea.id}}5" name="{{idea.id}}" value="5" checked> 
+							<label for="{{idea.id}}5"> 5</label>
+							<input type="radio" id="{{idea.id}}6" name="{{idea.id}}" value="6"> 
+							<label for="{{idea.id}}6"> 6</label>
+							<input type="radio" id="{{idea.id}}7" name="{{idea.id}}" value="7"> 
+							<label for="{{idea.id}}7"> 7</label>
+							<input type="radio" id="{{idea.id}}8" name="{{idea.id}}" value="8"> 
+							<label for="{{idea.id}}8"> 8</label>
+							<input type="radio" id="{{idea.id}}9" name="{{idea.id}}" value="9"> 
+							<label for="{{idea.id}}9"> 9</label>
+							<input type="radio" id="{{idea.id}}10" name="{{idea.id}}" value="10"> 
+							<label for="{{idea.id}}10"> 10</label>
+							
 						</div>
 					</div>
 					{% if forloop.counter|divisibleby:3 %}
 						</div><div class="row">
 					{% endif %}
+					
 				{% endfor %}
 				</div>
 				<input type="submit" value="Submit">
+				</form>
 			{% else %}
 				<div class="row">
 					<div class="col-md-2"></div>
@@ -151,6 +187,18 @@
 			</div>
 		{% endif %}
 	
+	
+		<div class="modal fade" id="successful_rating">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Success!</h5>
+						<p>You have rated your project ideas according to your preference.</p>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
 	
 	</body>
 </html>
