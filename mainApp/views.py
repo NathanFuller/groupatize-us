@@ -268,7 +268,7 @@ def event_page(request, event_id=None):
 		# get the event from the list
 		event = events[0]
 		#send_group_emails(event)
-		notify_creator(event)
+		#notify_creator(event)
 
 		if request.POST:
 			if 'createProject' in request.POST:
