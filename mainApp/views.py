@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 import smtplib
-from .models import User, Event, Project, U2P_Relation
+from .models import User, Event, Project, U2P_Relation, Group
 import hashlib
 from random import randint
 
@@ -268,6 +268,7 @@ def event_page(request, event_id=None):
 		# get the event from the list
 		event = events[0]
 		#send_group_emails(event)
+		notify_creator(event)
 
 		if request.POST:
 			if 'createProject' in request.POST:
@@ -423,3 +424,23 @@ def send_group_emails(event):
 					body += (user_send.name + " : Their email is " + user_send.email + "\n")
 			msg = '\r\n'.join(['Subject: You have been sorted!', "", body])
 			s.sendmail(EMAIL_HOST_USER, to_email, msg)
+
+
+def notify_creator(event):
+	groups = Group.objects.filter(event=event)
+	s=smtplib.SMTP("smtp.gmail.com", 587)
+	s.ehlo()
+	s.starttls()
+	s.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+
+	creator = event.organizer
+	body = "The groups have been created for your event! They are as follows:\n\n"
+	for group in groups:
+		project = group.project
+		body += 'Project: ' + project.name + '\n' + 'Project Description: ' + project.description + '\nTeam Members:\n\n'
+		for user in group.users.all():
+			body += user.name + " " + user.email + '\n'
+		body += '\n\n'
+
+	msg = '\r\n'.join(['Subject: Groups have been sorted!', "", body])
+	s.sendmail(EMAIL_HOST_USER, creator.email, msg)

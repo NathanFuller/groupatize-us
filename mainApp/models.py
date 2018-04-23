@@ -120,6 +120,7 @@ class U2P_Relation(models.Model):
 	rater = models.ForeignKey(User)
 	project = models.ForeignKey(Project)
 	rating = models.IntegerField()
+	event = models.ForeignKey(Event)
 
 
 class Group(models.Model):
