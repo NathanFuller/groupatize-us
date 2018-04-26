@@ -196,7 +196,7 @@
 					<form action="join/" method="post">
 						{% csrf_token %}
 						<h4>Join an Event</h4>
-						<input type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
+						<input required type="text" name="groupHash" placeholder="Group Keyword" class="form-control"> <br>
 						<button type="submit" class="btn btn-outline-primary btn-block">Join</button>
 					</form>
 				</div>
