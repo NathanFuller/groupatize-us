@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^create/', views.redir_create_event_page, name='create_event_page'),
 	url(r'^join/', views.join_event, name='join_event'),
 	url(r'^event/editProject', views.edit_project_idea, name='edit_project'),
+	url(r'^event/editEvent', views.edit_event, name='edit_event'),
 	url(r'^event/(?P<event_id>[0-9]+)/rate', views.rate_project_ideas, name='rate_event'),
 	url(r'^event/(?P<event_id>[0-9]+)/submitratings/', views.submit_ratings, name='submit_ratings'),
 	url(r'^event/(?P<event_id>[0-9]+)', views.event_page, name='event_page'),

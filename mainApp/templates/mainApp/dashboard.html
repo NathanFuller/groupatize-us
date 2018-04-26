@@ -38,6 +38,12 @@
 				font-size: 5vw;
 				margin-top: 75px;
 			}
+            .add-img {
+                margin: 10px;
+            }
+            .add-img {
+                cursor: pointer;
+            }
 			.event_container{
 				background-color: white;
 				border-radius: 5px;
@@ -55,16 +61,35 @@
 			.fa {
 				font-size: 3vw;
 			}
-			@media only screen and (max-device-width: 769px) {
+			.modal input, textarea {
+				margin-top: 10px;
+			}
+			.modal button{
+				margin-top: 10px;
+			}
+			@media only screen and (max-device-width: 1024px) {
 				.btn {
 					margin-top: 10px;
 				}
+			}
+			@media only screen and (max-device-width: 768px) {
 				.fa {
 					font-size: 10vw;
 				}
 			}
 
 		</style>
+        <script type="text/javascript">
+			function editModal(id)
+			{
+				$('#editModal'+id).modal('show');
+				console.log('#editModal'+id)
+			}
+			function addEventModal()
+			{
+				$('#addEventModal').modal('show');
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -109,28 +134,56 @@
                 {% if event_list.count > 0 %}
                     <div class="row">
                     {% for event in event_list %}
-                        <div class="col-md-4">
-
-                                <div class="event_container">
-                                    <h2>{{event.name}}</h2>
-                                    <p>{{event.description}}</p>
-									<div class="container">
-										<div class="row">
-											<div class="col-lg-6">
-												<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
-											</div>
-											<div class="col-lg-6">
-												<form action="{% url 'groupatize' %}" method="post">
-													<button type="submit" name="button" class="btn btn-outline-success">Create Groups</button>
-													<input type="hidden" name="event_id" value="{{event.pk}}">
-													{% csrf_token %}
-												</form>
+                        <div class="modal fade" id="editModal{{event.pk}}">
+				    	<div class="modal-dialog modal-md" role="dialog">
+				    		<div class="modal-content">
+				    			<div class="modal-body text-center">
+									<form action="{% url 'edit_event' %}" method="post">
+										{% csrf_token %}
+										<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h3>Edit Event</h3>
+										<input required type="text" name="title" placeholder="Event Name" class="form-control" value="{{event.name}}">
+										<textarea name="description" rows="4" class="form-control" placeholder="Description">{{event.description}}</textarea>
+		                                <textarea name="size" rows="1" class="form-control" placeholder="Preferred Size">{{event.ideal_group_size}}</textarea>
+		                                <input type="hidden" value="{{ event.pk }}" name="event_id" />
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-lg-6">
+													<button type="submit" name="submit_type" value="edit" class="btn btn-primary">Submit Changes</button>
+												</div>
+												<div class="col-lg-6">
+													<button type="submit" name="submit_type" value="delete" class="btn btn-danger">Delete Event</button>
+												</div>
 											</div>
 										</div>
+									</form>
+				    			</div>
+				    		</div>
+				    	</div>
+				    </div>
+                    <div class="col-md-4">
+                        <div class="event_container">
+                            <h2>{{event.name}}</h2>
+                            <p>{{event.description}}</p>
+							<div class="container">
+								<div class="row">
+									<div class="col-xl-4">
+										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
 									</div>
-                                </div>
-                            </a>
+									<div class="col-xl-4">
+										<form action="{% url 'groupatize' %}" method="post">
+											<button type="submit" name="button" class="btn btn-outline-success">Create Groups</button>
+											<input type="hidden" name="event_id" value="{{event.pk}}">
+											{% csrf_token %}
+										</form>
+									</div>
+									<div class="col-xl-4">
+										<button type="button" name="editButton" class="btn btn-outline-warning" onclick="editModal({{event.pk}})">Edit</button>
+									</div>
+								</div>
+							</div>
                         </div>
+                    </div>
                     {% endfor %}
                     </div>
                 {% else %}
@@ -138,6 +191,25 @@
                         <h2>No Events Created</h2>
                     </div>
                 {% endif %}
+            {% load static %}
+                <img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addEventModal()">
             </div>
+    <div class="modal fade" id="addEventModal">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<form action="" method="post">
+							{% csrf_token %}
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+		    				<h3>Create Event</h3>
+							<input required type="text" name="title" placeholder="Event Name" class="form-control">
+                            <textarea name="description" rows="4" class="form-control" placeholder="Project Description"></textarea>
+                            <textarea name="size" rows="1" class="form-control" placeholder="Preferred Group Size"></textarea>
+							<button type="submit" name="createEvent" class="btn btn-primary">Create</button>
+						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
 	</body>
 </html>
