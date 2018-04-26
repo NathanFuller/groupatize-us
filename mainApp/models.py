@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from django.db import models
 import hashlib
-import sha3
+#import sha3
 from random import randint
 
 
