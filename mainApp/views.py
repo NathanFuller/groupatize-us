@@ -314,6 +314,16 @@ def event_page(request, event_id=None):
 def dashboard_page(request):
 	print "Dashboard"
 
+	if request.POST:
+		if 'createEvent' in request.POST:
+			event_name = request.POST['title']
+			description = request.POST['description']
+			preffered_size = request.POST['size']
+
+			user = User.objects.filter(pk=request.session.get('user'))[0]
+			event = user.create_event(event_name, description, preffered_size)
+			return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
+
 	if request.session.get('user', None) != None:
 		print "user logged in"
 		user = User.objects.filter(pk=request.session['user'])[0]
@@ -356,6 +366,26 @@ def edit_project_idea(request):
 
 	return redirect('event_page', event_id)
 
+def edit_event(request):
+	# get post data
+	name = request.POST.get('title', None)
+	description = request.POST.get('description', None)
+	size = request.POST.get('size', None)
+	submit_type = request.POST.get('submit_type', None)
+	event_id = request.POST.get('event_id', None)
+
+	event = Event.objects.get(id=event_id)
+
+	if submit_type == 'delete':
+		event.delete()
+
+	elif submit_type == 'edit':
+		event.name = name
+		event.description = description
+		event.ideal_group_size = size
+		event.save()
+
+	return redirect(dashboard_page)
 
 def rate_project_ideas(request, event_id):
 	print "You tried to rate projects on ", event_id
