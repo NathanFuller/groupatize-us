@@ -183,7 +183,7 @@
             {% load static %}
 				{% if not groups %}
 				<img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addProjectModal()">
-                <a href="{% url 'rate_event' event_id=event_id %}">Rate project ideas</a>
+                <a href="{% url 'rate_event' event_id=event_id %}" style="color:white">Rate project ideas</a>
 				{% endif %}
 			</div>
 		{% else %}
