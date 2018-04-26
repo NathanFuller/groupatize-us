@@ -270,6 +270,8 @@ def event_page(request, event_id=None):
 		#send_group_emails(event)
 		#notify_creator(event)
 
+		groups = Group.objects.filter(event=event)
+
 		if request.POST:
 			if 'createProject' in request.POST:
 				project_name = request.POST['title']
@@ -289,7 +291,8 @@ def event_page(request, event_id=None):
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
 						'creator_access':True,
-						'event_id': event_id}
+						'event_id': event_id,
+						'groups':groups}
 		else:
 			# context info
 			context = {'found_event':True,
@@ -297,7 +300,8 @@ def event_page(request, event_id=None):
 						'event_description':event.description,
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
-						'event_id': event_id}
+						'event_id': event_id,
+						'groups':groups}
 	else:
 		context = {'found_event':False}
 

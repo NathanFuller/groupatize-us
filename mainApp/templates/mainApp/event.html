@@ -114,7 +114,28 @@
 				</div>
 			</div>
 			<div class="container-fluid text-center">
-			{% if project_ideas %}
+
+			{% if groups %}
+				<div class="row">
+				{% for group in groups %}
+					<div class="col-md-4">
+						<div class="project_idea">
+							<h2>{{group.project.name}}</h2>
+							<p>{{group.project.description}}</p>
+							{% for user in group.users.all %}
+								<p>{{user.name}}</p>
+							{% endfor %}
+							{% if creator_access %}
+							<button type="button" name="button" class="btn btn-primary" onclick="editModal({{group.project.pk}})">Edit Project</button>
+							{% endif %}
+						</div>
+					</div>
+					{% if forloop.counter|divisibleby:3 %}
+						</div><div class="row">
+					{% endif %}
+				{% endfor %}
+				</div>
+			{% elif project_ideas %}
 				<div class="row">
 				{% for idea in project_ideas %}
 					<div class="col-md-4">
@@ -155,6 +176,8 @@
 				</div>
 			</div>
 		{% endif %}
+
+
 		{% if project_ideas and creator_access %}
 			{% for project in project_ideas %}
 			<div class="modal fade" id="editModal{{project.pk}}">
