@@ -84,6 +84,15 @@
 				$('#addProjectModal').modal('show');
 			}
 		</script>
+		<!-- If its a redirect off a ratings success-->
+		{% if rated == 'True' %}
+			<script type='text/javascript'>
+				$(window).on('load',function(){
+					$('#successful_rating').modal('show');
+				});
+			</script>
+		{% endif %}
+
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -233,6 +242,20 @@
                             <textarea name="description" rows="4" class="form-control" placeholder="Project Description">{{project.description}}</textarea>
 							<button type="submit" name="createProject" class="btn btn-primary">Create</button>
 						</form>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+
+		<!-- Successful rating confirmation -->
+		<div class="modal fade" id="successful_rating">
+	    	<div class="modal-dialog modal-sm" role="dialog">
+	    		<div class="modal-content">
+	    			<div class="modal-body text-center">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h5>Success!</h5>
+						<p style="color:black">Your ratings have been submitted</p>
 	    			</div>
 	    		</div>
 	    	</div>

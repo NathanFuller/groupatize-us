@@ -305,6 +305,7 @@ def event_page(request, event_id=None):
 	else:
 		context = {'found_event':False}
 
+
 	if request.GET.get('rate_success', None) == 'True':
 		print "Ratings submitted successfully"
 		context['rated'] = 'True'
