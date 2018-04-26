@@ -55,6 +55,15 @@
 			.fa {
 				font-size: 3vw;
 			}
+			@media only screen and (max-device-width: 769px) {
+				.btn {
+					margin-top: 10px;
+				}
+				.fa {
+					font-size: 10vw;
+				}
+			}
+
 		</style>
 	</head>
 	<body>
@@ -101,12 +110,24 @@
                     <div class="row">
                     {% for event in event_list %}
                         <div class="col-md-4">
-                            
+
                                 <div class="event_container">
                                     <h2>{{event.name}}</h2>
                                     <p>{{event.description}}</p>
-                                    <a href="../event/{{event.id}}" class= "btn btn-primary">View Event</a>
-                                    <button type="button" name="button" class="btn btn-primary">Create Groups</button>
+									<div class="container">
+										<div class="row">
+											<div class="col-lg-6">
+												<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+											</div>
+											<div class="col-lg-6">
+												<form action="{% url 'groupatize' %}" method="post">
+													<button type="submit" name="button" class="btn btn-outline-success">Create Groups</button>
+													<input type="hidden" name="event_id" value="{{event.pk}}">
+													{% csrf_token %}
+												</form>
+											</div>
+										</div>
+									</div>
                                 </div>
                             </a>
                         </div>
