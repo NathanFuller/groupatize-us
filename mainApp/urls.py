@@ -15,5 +15,6 @@ urlpatterns = [
 	url(r'^event/(?P<event_id>[0-9]+)/rate', views.rate_project_ideas, name='rate_event'),
 	url(r'^event/(?P<event_id>[0-9]+)/submitratings/', views.submit_ratings, name='submit_ratings'),
 	url(r'^event/(?P<event_id>[0-9]+)', views.event_page, name='event_page'),
-	url(r'^dashboard/', views.dashboard_page, name='dashboard_page')
+	url(r'^dashboard/', views.dashboard_page, name='dashboard_page'),
+	url(r'^results/(?P<event_id>[0-9]+)', views.show_results, name='show_results')
 ]

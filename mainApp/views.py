@@ -19,7 +19,7 @@ EMAIL_PORT = 465
 # import sha3
 from django.http import HttpResponse
 import numpy as np
-from scipy.optimize import linear_sum_assignment
+#from scipy.optimize import linear_sum_assignment
 
 def index(request):
 	#print "Main page!"
@@ -140,6 +140,8 @@ def groupatize(request):
 		#Send Emails
 		#send_group_emails(event)
 		#notify_creator(event)
+		
+		
 		
 		return redirect("".join(["../event/", str(event.id)]))
 	else:
@@ -443,10 +445,58 @@ def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUV
     arr.reverse()
     return ''.join(arr)
     
-def show_results(request, event):
-	groups = Group.objects.filter(event=event)
-	context = {'groups' : groups}
-	return render (request, 'mainApp/results.html', context)
+def show_results(request, event_id=None):
+	# find the event
+	events = Event.objects.filter(pk=event_id)
+	context = {'event_id':event_id}
+
+	# if we found the event
+	if len(events) == 1:
+		# get the event from the list
+		event = events[0]
+		#send_group_emails(event)
+		#notify_creator(event)
+
+		groups = Group.objects.filter(event=event)
+
+		if request.POST:
+			if 'createProject' in request.POST:
+				project_name = request.POST['title']
+				project_description = request.POST['description']
+				event.add_project_idea(project_name, project_description,
+									   User.objects.get(pk=request.session['user']))
+
+		# get the project keys associated with this event
+		project_ideas = event.get_project_ideas()
+
+		# if the user is logged in and they are the creator of the event
+		if request.session.get('user', None) and event.organizer == User.objects.get(pk=request.session['user']):
+			# context info
+			context = {'found_event':True,
+						'event_name':event.name,
+						'event_description':event.description,
+						'preffered_size':event.ideal_group_size,
+						'project_ideas': project_ideas,
+						'creator_access':True,
+						'event_id': event_id,
+						'groups':groups}
+		else:
+			# context info
+			context = {'found_event':True,
+						'event_name':event.name,
+						'event_description':event.description,
+						'preffered_size':event.ideal_group_size,
+						'project_ideas': project_ideas,
+						'event_id': event_id,
+						'groups':groups}
+	else:
+		context = {'found_event':False}
+
+	if request.GET.get('rate_success', None) == 'True':
+		print "Ratings submitted successfully"
+		context['rated'] = 'True'
+
+	return render(request, 'mainApp/results.html', context)
 	
 
 

@@ -172,16 +172,22 @@
                             <p>{{event.description}}</p>
 							<div class="container">
 								<div class="row">
-									<div class="col-xl-4">
-										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
-									</div>
-									<div class="col-xl-4">
-										<form action="{% url 'groupatize' %}" method="post">
-											<button type="submit" name="button" class="btn btn-outline-success">Create Groups</button>
-											<input type="hidden" name="event_id" value="{{event.pk}}">
-											{% csrf_token %}
-										</form>
-									</div>
+									{% if event.grouped == False %}
+										<div class="col-xl-4">
+											<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+										</div>
+										<div class="col-xl-4">
+											<form action="{% url 'groupatize' %}" method="post">
+												<button type="submit" name="button" class="btn btn-outline-success">Create Groups</button>
+												<input type="hidden" name="event_id" value="{{event.pk}}">
+												{% csrf_token %}
+											</form>
+										</div>
+									{% else %}
+										<div class="col-xl-4">
+											<a href="../results/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+										</div>
+									{% endif %}
 									<div class="col-xl-4">
 										<button type="button" name="editButton" class="btn btn-outline-warning" onclick="editModal({{event.pk}})">Edit</button>
 									</div>
@@ -221,9 +227,15 @@
                             <p>{{event.description}}</p>
 							<div class="container">
 								<div class="row">
-									<div class="col-xl-4"> 
-										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
-									</div>
+									{% if event.grouped == False %}
+										<div class="col-xl-4">
+											<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+										</div>
+									{% else %}
+										<div class="col-xl-4">
+											<a href="../results/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+										</div>
+									{% endif %}
 								</div>
 							</div>
                         </div>

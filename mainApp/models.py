@@ -79,6 +79,7 @@ class Event(models.Model):
 	allow_voting = models.BooleanField(default=True)
 	participants = models.ManyToManyField(User, related_name='participants')
 	groups = models.CharField(max_length=2000, default="")
+	grouped = False
 
 	# add new project idea to CSV
 	def add_project_idea(self, name, description, user):
