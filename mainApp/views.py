@@ -19,7 +19,7 @@ EMAIL_PORT = 465
 # import sha3
 from django.http import HttpResponse
 import numpy as np
-# from scipy.optimize import linear_sum_assignment
+from scipy.optimize import linear_sum_assignment
 
 def index(request):
 	#print "Main page!"
@@ -77,6 +77,8 @@ def groupatize(request):
 
 		#Get the U2P_Relations
 		u2p_list = U2P_Relation.objects.filter(event=event_id)
+		if len(u2p_list) < 1:
+			return redirect('../dashboard/?ratings_present=False')
 		user_list = []
 		project_list = []
 		project_popularity = {}
@@ -92,7 +94,11 @@ def groupatize(request):
 			project_popularity[u2p.project] += u2p.rating
 
 		#Determine the number of projects
-		num_proj = len(user_list)/event.ideal_group_size
+		print "__________________"
+		print "Users: ", len(user_list)
+		print "IGS: ", event.ideal_group_size
+		print "#Proj:", len(user_list)/event.ideal_group_size
+		num_proj = min(len(user_list)/event.ideal_group_size, len(project_list))
 		proj_pop_sorted = sorted(project_popularity.items(), key=lambda x: x[1], reverse=True)
 		selected_proj = [proj_pop_sorted[proj][0] for proj in xrange(num_proj)]
 
@@ -270,6 +276,8 @@ def event_page(request, event_id=None):
 		#send_group_emails(event)
 		#notify_creator(event)
 
+		groups = Group.objects.filter(event=event)
+
 		if request.POST:
 			if 'createProject' in request.POST:
 				project_name = request.POST['title']
@@ -289,7 +297,8 @@ def event_page(request, event_id=None):
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
 						'creator_access':True,
-						'event_id': event_id}
+						'event_id': event_id,
+						'groups':groups}
 		else:
 			# context info
 			context = {'found_event':True,
@@ -297,9 +306,11 @@ def event_page(request, event_id=None):
 						'event_description':event.description,
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
-						'event_id': event_id}
+						'event_id': event_id,
+						'groups':groups}
 	else:
 		context = {'found_event':False}
+
 
 	if request.GET.get('rate_success', None) == 'True':
 		print "Ratings submitted successfully"
@@ -309,6 +320,16 @@ def event_page(request, event_id=None):
 
 def dashboard_page(request):
 	print "Dashboard"
+
+	if request.POST:
+		if 'createEvent' in request.POST:
+			event_name = request.POST['title']
+			description = request.POST['description']
+			preffered_size = request.POST['size']
+
+			user = User.objects.filter(pk=request.session.get('user'))[0]
+			event = user.create_event(event_name, description, preffered_size)
+			return redirect(reverse('event_page', kwargs={'event_id': event.pk}))
 
 	if request.session.get('user', None) != None:
 		print "user logged in"
@@ -352,6 +373,26 @@ def edit_project_idea(request):
 
 	return redirect('event_page', event_id)
 
+def edit_event(request):
+	# get post data
+	name = request.POST.get('title', None)
+	description = request.POST.get('description', None)
+	size = request.POST.get('size', None)
+	submit_type = request.POST.get('submit_type', None)
+	event_id = request.POST.get('event_id', None)
+
+	event = Event.objects.get(id=event_id)
+
+	if submit_type == 'delete':
+		event.delete()
+
+	elif submit_type == 'edit':
+		event.name = name
+		event.description = description
+		event.ideal_group_size = size
+		event.save()
+
+	return redirect(dashboard_page)
 
 def rate_project_ideas(request, event_id):
 	print "You tried to rate projects on ", event_id
