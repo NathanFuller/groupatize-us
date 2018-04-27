@@ -94,10 +94,6 @@ def groupatize(request):
 			project_popularity[u2p.project] += u2p.rating
 
 		#Determine the number of projects
-		print "__________________"
-		print "Users: ", len(user_list)
-		print "IGS: ", event.ideal_group_size
-		print "#Proj:", len(user_list)/event.ideal_group_size
 		num_proj = min(len(user_list)/event.ideal_group_size, len(project_list))
 		proj_pop_sorted = sorted(project_popularity.items(), key=lambda x: x[1], reverse=True)
 		selected_proj = [proj_pop_sorted[proj][0] for proj in xrange(num_proj)]
@@ -123,26 +119,27 @@ def groupatize(request):
 			ratings_array.append(user_ratings)
 		ratings_matrix = np.array(ratings_array)
 
-		#Print some stuff to show that it works
-		print "Ratings Matrix"
-		print ratings_matrix
-		print "\n"
+		#Run the algorithm, print the satisfaction.
 		ratings_matrix *= -1
 		row_ind, col_ind = linear_sum_assignment(ratings_matrix)
-
-		print "Users:"
-		for user in user_list:
-			print "\t", user
-
-		print "Tasks:"
-		for task in sel_proj_pos:
-			print "\t", task.name
-
 		print "\nSatisfaction ", ratings_matrix[row_ind, col_ind].sum() * -1 / len(user_list) * 10, "%"
-		print "user ", row_ind
-		print "task ", col_ind
-
-		return HttpResponse("Look at the console for now.")
+		
+		#Create the groups
+		for proj in selected_proj:
+			event.add_group(proj)
+		
+		#Assign the users to the groups
+		for user in xrange(len(user_list)):
+			print user_list[user], "will work on", sel_proj_pos[col_ind[user]].name
+			assigned_group = Group.objects.filter(project=sel_proj_pos[col_ind[user]])[0]
+			assigned_group.users.add(user_list[user])
+			assigned_group.save()
+			
+		#Send Emails
+		#send_group_emails(event)
+		#notify_creator(event)
+		
+		return redirect("".join(["../event/", str(event.id)]))
 	else:
 		return redirect("../")
 
@@ -267,8 +264,6 @@ def event_page(request, event_id=None):
 	events = Event.objects.filter(pk=event_id)
 	context = {'event_id':event_id}
 
-
-
 	# if we found the event
 	if len(events) == 1:
 		# get the event from the list
@@ -310,7 +305,6 @@ def event_page(request, event_id=None):
 						'groups':groups}
 	else:
 		context = {'found_event':False}
-
 
 	if request.GET.get('rate_success', None) == 'True':
 		print "Ratings submitted successfully"
@@ -356,8 +350,6 @@ def edit_project_idea(request):
 	submit_type = request.POST.get('submit_type', None)
 	project_id = request.POST.get('projectID', None)
 	event_id = request.POST.get('event_id', None)
-
-
 
 	# get the project
 	project = Project.objects.get(id=project_id)
@@ -412,7 +404,6 @@ def rate_project_ideas(request, event_id):
 				'project_ideas': project_ideas,
 				'event_id': event_id}
 
-
 	return render(request, 'mainApp/rateProjects.html', context)
 
 
@@ -422,7 +413,6 @@ def submit_ratings(request, event_id): #probably something else too
 	events = Event.objects.filter(pk=event_id)
 	event = events[0]
 
-
 	#loop through projects of event and call function from user
 	for key in request.POST: #rate_project(self, project_id, my_rating):
 		if (key != 'csrfmiddlewaretoken'):
@@ -430,8 +420,6 @@ def submit_ratings(request, event_id): #probably something else too
 			project = Project.objects.get(pk=key)
 			print "Rate project ", key, " with rating ", rating
 			user.rate_project(project, rating, event)
-
-
 
 	return redirect('../?rate_success=True')
 
