@@ -457,8 +457,6 @@ def show_results(request, event_id=None):
 	if len(events) == 1:
 		# get the event from the list
 		event = events[0]
-		#send_group_emails(event)
-		#notify_creator(event)
 
 		groups = Group.objects.filter(event=event)
 
@@ -471,21 +469,8 @@ def show_results(request, event_id=None):
 
 		# get the project keys associated with this event
 		project_ideas = event.get_project_ideas()
-
-		# if the user is logged in and they are the creator of the event
-		if request.session.get('user', None) and event.organizer == User.objects.get(pk=request.session['user']):
-			# context info
-			context = {'found_event':True,
-						'event_name':event.name,
-						'event_description':event.description,
-						'preffered_size':event.ideal_group_size,
-						'project_ideas': project_ideas,
-						'creator_access':True,
-						'event_id': event_id,
-						'groups':groups}
-		else:
-			# context info
-			context = {'found_event':True,
+		
+		context = {'found_event':True,
 						'event_name':event.name,
 						'event_description':event.description,
 						'preffered_size':event.ideal_group_size,

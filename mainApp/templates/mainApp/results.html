@@ -64,18 +64,15 @@
 			.modal input, textarea{
 				margin: 8px;
 			}
+			@media only screen and (max-device-width: 769px) {
+				h1 {
+					font-size: 10vw;
+				}
+				.fa {
+					font-size: 10vw;
+				}
+			}
 		</style>
-		<script type="text/javascript">
-			function editModal(id)
-			{
-				$('#editModal'+id).modal('show');
-				console.log('#editModal'+id)
-			}
-			function addProjectModal()
-			{
-				$('#addProjectModal').modal('show');
-			}
-		</script>
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -95,7 +92,7 @@
 					</li>
 				{% else %}
 					<li class="nav-item">
-				 		<a href="../dashboard" title="Dashboard"><i class="fa fa-user-circle"></i></a>
+				 		<a href="{% url 'dashboard_page' %}" title="Dashboard"><i class="fa fa-user-circle"></i></a>
 					</li>
 					<li class="nav-item">
 						<a href="{% url 'logout' %}" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
@@ -104,33 +101,43 @@
 				</ul>
 	  		</div>
 	  	</nav>
-	  	    
-	  	    <div class="container-fluid text-center">
-				<div>
-					<div class="row">
-						<div class="col-md-12">
-							<h1>Group Results</h1>
-							<h2>{{group.event}}</h2>
-						</div>
+		{% if found_event == True %}
+			<div class="container-fluid text-center">
+				<div class="row">
+					<div class="col-md-12">
+						<h1>{{event_name}}</h1>
+						<p>{{event_description}}</p>
 					</div>
 				</div>
 			</div>
-			
-			{% for group in groups %}
-                <div class="col-md-4">
-                            
-                    <div class="event_container">
-                        <h2>{{group.project}}</h2>
-                        <h3>Group Members</h3>
-                        <ul>
-                            {% for member in groups.users %}
-                                    <li>{{member}}</li>        
-                            {% endif %}
-                        </ul>
-                                    
-                    </div>
-                </div>
-            {% endfor %}
-        
+			<div class="container-fluid text-center">
+
+				{% for group in groups %}
+					<div class="col-md-4">
+						<div class="project_idea">
+							<h2>{{group.project.name}}</h2>
+							<p>{{group.project.description}}</p>
+							<ul>
+								{% for user in group.users.all %}
+								<li>{{user.name}}</li>
+							{% endfor %}
+							</ul>
+						</div>
+					</div>
+					{% if forloop.counter|divisibleby:3 %}
+						</div><div class="row">
+					{% endif %}
+				{% endfor %}
+				</div>
+			</div>
+		{% else %}
+			<div class="container-fluid text-center">
+				<div class="row">
+					<div class="col-md-12">
+						<h1>Event Not Found!</h1>
+					</div>
+				</div>
+			</div>
+		{% endif %}
 	</body>
 </html>

@@ -209,56 +209,42 @@
 
             <div class="container-fluid text-center">
                 {% if part_list.count > 0 %}
-                <hr noshade>
-                <div class="container-fluid text-left">
-					<div>
-						<div class="row">
-							<div class="col-md-12">
-								<h1>Joined Events:</h1>
+                	<hr noshade>
+                	<div class="container-fluid text-left">
+						<div>
+							<div class="row">
+								<div class="col-md-12">
+									<h1>Joined Events:</h1>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-                    <div class="row">
-                    {% for event in part_list %}
-                    <div class="col-md-4">
-                        <div class="event_container">
-                            <h2>{{event.name}}</h2>
-                            <p>{{event.description}}</p>
-							<div class="container">
-								<div class="row">
-<<<<<<< HEAD
-									{% if event.grouped == False %}
+                   	 <div class="row">
+                    	{% for event in part_list %}
+                    	<div class="col-md-4">
+                        	<div class="event_container">
+                           	 <h2>{{event.name}}</h2>
+                            	<p>{{event.description}}</p>
+								<div class="container">
+									<div class="row">
+										{% if event.grouped == False %}
+											<div class="col-xl-4">
+												<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+											</div>
+										{% else %}
+											<div class="col-xl-4">
+												<a href="../results/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+											</div>
+										{% endif %}
 										<div class="col-xl-4">
 											<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
 										</div>
-									{% else %}
-										<div class="col-xl-4">
-											<a href="../results/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
-										</div>
-									{% endif %}
-=======
-									<div class="col-xl-4">
-										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
 									</div>
->>>>>>> 086ccb59a8a4f735e73adc0de4c28b0177162c09
 								</div>
-							</div>
-                        </div>
-                    </div>
-                    {% endfor %}
+                        	</div>
+                    	</div>
+                    	{% endfor %}
 
-                    </div>
-                {% else %}
-					<div class="container-fluid text-left">
-						<div class="row">
-							<div class="col-sm-12">
-								<h1>Joined Events:</h1>
-							</div>
-						</div>
-					</div>
-                    <div class="event_container">
-                        <h2>No Events Joined</h2>
                     </div>
                 {% endif %}
             </div>
