@@ -132,9 +132,10 @@ def groupatize(request):
 		#Assign the users to the groups
 		for user in xrange(len(user_list)):
 			print user_list[user], "will work on", sel_proj_pos[col_ind[user]].name
-			assigned_group = Group.objects.filter(project=sel_proj_pos[col_ind[user]])[0]
-			assigned_group.users.add(user_list[user])
-			assigned_group.save()
+			assigned_group = Group.objects.filter(project=sel_proj_pos[col_ind[user]])
+			if len(assigned_group) > 1: assigned_group[1].delete()
+			assigned_group[0].users.add(user_list[user])
+			assigned_group[0].save()
 			
 		#Send Emails
 		#send_group_emails(event)
