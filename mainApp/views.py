@@ -95,6 +95,7 @@ def groupatize(request):
 
 		#Determine the number of projects
 		num_proj = min(len(user_list)/event.ideal_group_size, len(project_list))
+		if num_proj == 0: num_proj = 1
 		proj_pop_sorted = sorted(project_popularity.items(), key=lambda x: x[1], reverse=True)
 		selected_proj = [proj_pop_sorted[proj][0] for proj in xrange(num_proj)]
 
