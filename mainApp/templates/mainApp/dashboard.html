@@ -147,9 +147,9 @@
 										{% csrf_token %}
 										<button type="button" class="close" data-dismiss="modal">&times;</button>
 										<h3>Edit Event</h3>
-										<input required type="text" name="title" placeholder="Event Name" class="form-control" value="{{event.name}}">
-										<textarea name="description" rows="4" class="form-control" placeholder="Description">{{event.description}}</textarea>
-		                                <textarea name="size" rows="1" class="form-control" placeholder="Preferred Size">{{event.ideal_group_size}}</textarea>
+										<input required type="text" name="title" placeholder="Event Name" class="form-control"  value="{{event.name}}">
+										<textarea required name="description" rows="4" class="form-control" placeholder="Description" >{{event.description}}</textarea>
+		                                <textarea required name="size" rows="1" class="form-control" placeholder="Preferred Size" >{{event.ideal_group_size}}</textarea>
 		                                <input type="hidden" value="{{ event.pk }}" name="event_id" />
 										<div class="container-fluid">
 											<div class="row">
@@ -196,7 +196,7 @@
                         </div>
                     </div>
                     {% endfor %}
-                    
+
                     </div>
                 {% else %}
                     <div class="event_container">
@@ -206,7 +206,7 @@
             {% load static %}
                 <img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addEventModal()">
             </div>
-            
+
             <div class="container-fluid text-center">
                 {% if part_list.count > 0 %}
                 <hr noshade>
@@ -227,6 +227,7 @@
                             <p>{{event.description}}</p>
 							<div class="container">
 								<div class="row">
+<<<<<<< HEAD
 									{% if event.grouped == False %}
 										<div class="col-xl-4">
 											<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
@@ -236,20 +237,32 @@
 											<a href="../results/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
 										</div>
 									{% endif %}
+=======
+									<div class="col-xl-4">
+										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+									</div>
+>>>>>>> 086ccb59a8a4f735e73adc0de4c28b0177162c09
 								</div>
 							</div>
                         </div>
                     </div>
                     {% endfor %}
-                    
+
                     </div>
                 {% else %}
+					<div class="container-fluid text-left">
+						<div class="row">
+							<div class="col-sm-12">
+								<h1>Joined Events:</h1>
+							</div>
+						</div>
+					</div>
                     <div class="event_container">
                         <h2>No Events Joined</h2>
                     </div>
                 {% endif %}
             </div>
-            
+
     <div class="modal fade" id="addEventModal">
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">
@@ -259,8 +272,8 @@
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 		    				<h3>Create Event</h3>
 							<input required type="text" name="title" placeholder="Event Name" class="form-control">
-                            <textarea name="description" rows="4" class="form-control" placeholder="Project Description"></textarea>
-                            <textarea name="size" rows="1" class="form-control" placeholder="Preferred Group Size"></textarea>
+                            <textarea required name="description" rows="4" class="form-control" placeholder="Project Description"></textarea>
+                            <textarea required name="size" rows="1" class="form-control" placeholder="Preferred Group Size"></textarea>
 							<button type="submit" name="createEvent" class="btn btn-primary">Create</button>
 						</form>
 	    			</div>

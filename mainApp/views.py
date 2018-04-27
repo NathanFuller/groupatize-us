@@ -138,8 +138,8 @@ def groupatize(request):
 			assigned_group[0].save()
 			
 		#Send Emails
-		#send_group_emails(event)
-		#notify_creator(event)
+		send_group_emails(event)
+		notify_creator(event)
 		
 		
 		
@@ -272,8 +272,6 @@ def event_page(request, event_id=None):
 	if len(events) == 1:
 		# get the event from the list
 		event = events[0]
-		#send_group_emails(event)
-		#notify_creator(event)
 
 		groups = Group.objects.filter(event=event)
 
@@ -402,6 +400,11 @@ def rate_project_ideas(request, event_id):
 	# find the event
 	events = Event.objects.filter(pk=event_id)
 	event = events[0]
+	
+	#Added user to event if not already added
+	user = User.objects.get(pk=request.session.get('user', None))
+	event.participants.add(user)
+	
 
 	# get the project keys associated with this event
 	project_ideas = event.get_project_ideas()
