@@ -94,7 +94,11 @@ def groupatize(request):
 			project_popularity[u2p.project] += u2p.rating
 
 		#Determine the number of projects
-		num_proj = len(user_list)/event.ideal_group_size
+		print "__________________"
+		print "Users: ", len(user_list)
+		print "IGS: ", event.ideal_group_size
+		print "#Proj:", len(user_list)/event.ideal_group_size
+		num_proj = min(len(user_list)/event.ideal_group_size, len(project_list))
 		proj_pop_sorted = sorted(project_popularity.items(), key=lambda x: x[1], reverse=True)
 		selected_proj = [proj_pop_sorted[proj][0] for proj in xrange(num_proj)]
 
