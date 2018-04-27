@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	    <link href="https://fonts.googleapis.com/css?family=Raleway:600" rel="stylesheet">
+		<script src="https://use.fontawesome.com/c369fa3dc3.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Event</title>
+		<style media="screen">
+			body{
+				font-family: 'Raleway', sans-serif;
+				background-attachment: fixed;
+				/*background-color: #0C78E8;*/
+				background: #3a7bd5;  /* fallback for old browsers */
+				background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);  /* Chrome 10-25, Safari 5.1-6 */
+				background: linear-gradient(to right, #3a6073, #3a7bd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			}
+			/* Start navbar styling */
+			.navbar.transparent.navbar-inverse .navbar-inner {
+				background: rgba(0,0,0,0.4);
+			}
+			nav ul li {
+				margin-left:10px;
+				margin-right: 10px;
+			}
+			i {
+				color:white;
+			}
+			.fa {
+				font-size: 3vw;
+			}
+			/* End navbar styling */
+			h1, p{
+				color: white;
+			}
+			h1{
+				font-size: 5vw;
+				margin-top: 75px;
+			}
+			/* project idea styling */
+			.project_idea{
+				background-color: white;
+				border-radius: 5px;
+				padding-top: 10px;
+				padding-bottom: 10px;
+                margin-bottom: 20px;
+			}
+			.project_idea p{
+				color: black
+			}
+            .add-img {
+                margin: 10px;
+            }
+            .add-img {
+                cursor: pointer;
+            }
+
+			/* edit project model styling */
+			.modal input, textarea{
+				margin: 8px;
+			}
+		</style>
+		<script type="text/javascript">
+			function editModal(id)
+			{
+				$('#editModal'+id).modal('show');
+				console.log('#editModal'+id)
+			}
+			function addProjectModal()
+			{
+				$('#addProjectModal').modal('show');
+			}
+		</script>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav class="navbar navbar-toggleable-md navbar-inverse">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<a class="navbar-brand" href="{% url 'index' %}">Groupatizer</a>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ml-auto">
+				{% if request.session.user == None %}
+					<li class="nav-item">
+						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignInModalModal()">Sign in</button>
+					</li>
+					<li class="nav-item">
+						<button class="btn btn-outline-secondary navbar-btn" onclick="showSignUpModal()">Sign Up</button>
+					</li>
+				{% else %}
+					<li class="nav-item">
+				 		<a href="../dashboard" title="Dashboard"><i class="fa fa-user-circle"></i></a>
+					</li>
+					<li class="nav-item">
+						<a href="{% url 'logout' %}" title="Logout"><i class="fa fa-arrow-circle-right"></i></a>
+					</li>
+				{% endif %}
+				</ul>
+	  		</div>
+	  	</nav>
+	  	    
+	  	    <div class="container-fluid text-center">
+				<div>
+					<div class="row">
+						<div class="col-md-12">
+							<h1>Group Results</h1>
+							<h2>{{group.event}}</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			{% for group in groups %}
+                <div class="col-md-4">
+                            
+                    <div class="event_container">
+                        <h2>{{group.project}}</h2>
+                        <h3>Group Members</h3>
+                        <ul>
+                            {% for member in groups.users %}
+                                    <li>member</li>        
+                            {% endif %}
+                        </ul>
+                                    
+                    </div>
+                </div>
+            {% endfor %}
+        
+	</body>
+</html>

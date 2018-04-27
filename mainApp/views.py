@@ -405,6 +405,12 @@ def encodeID(num, alphabet="23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUV
         arr.append(alphabet[rem])
     arr.reverse()
     return ''.join(arr)
+    
+def show_results(request, event):
+	groups = Group.objects.filter(event=event)
+	context = {'groups' : groups}
+	return render (request, 'mainApp/results.html', context)
+	
 
 
 def send_group_emails(event):
