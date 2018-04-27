@@ -123,7 +123,8 @@ def groupatize(request):
 		#Run the algorithm, print the satisfaction.
 		ratings_matrix *= -1
 		row_ind, col_ind = linear_sum_assignment(ratings_matrix)
-		print "\nSatisfaction ", ratings_matrix[row_ind, col_ind].sum() * -1 / len(user_list) * 10, "%"
+		
+		event.satisfaction = "".join(["\nSatisfaction ", str(ratings_matrix[row_ind, col_ind].sum() * -1 / len(user_list) * 10), "%"])
 		
 		#Create the groups
 		for proj in selected_proj:
@@ -293,7 +294,8 @@ def event_page(request, event_id=None):
 						'project_ideas': project_ideas,
 						'creator_access':True,
 						'event_id': event_id,
-						'groups':groups}
+						'groups': groups,
+						'satisfaction': event.satisfaction}
 		else:
 			# context info
 			context = {'found_event':True,
@@ -302,7 +304,8 @@ def event_page(request, event_id=None):
 						'preffered_size':event.ideal_group_size,
 						'project_ideas': project_ideas,
 						'event_id': event_id,
-						'groups':groups}
+						'groups': groups,
+						'satisfaction': event.satisfaction}
 	else:
 		context = {'found_event':False}
 
