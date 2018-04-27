@@ -85,6 +85,12 @@ class Event(models.Model):
 		self.save()
 		project_idea = Project(name=name, description=description, proposer=user, event=self)
 		project_idea.save()
+		
+	# add new group
+	def add_group(self, project_idea):
+		self.save()
+		new_group = Group(event=self, project=project_idea)
+		new_group.save()
 
 	# get project ideas as list
 	def get_project_ideas(self):
