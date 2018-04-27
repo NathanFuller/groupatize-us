@@ -19,7 +19,7 @@ EMAIL_PORT = 465
 # import sha3
 from django.http import HttpResponse
 import numpy as np
-#from scipy.optimize import linear_sum_assignment
+from scipy.optimize import linear_sum_assignment
 
 def index(request):
 	#print "Main page!"
