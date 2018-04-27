@@ -138,8 +138,8 @@ def groupatize(request):
 			assigned_group[0].save()
 			
 		#Send Emails
-		#send_group_emails(event)
-		#notify_creator(event)
+		send_group_emails(event)
+		notify_creator(event)
 		
 		return redirect("".join(["../event/", str(event.id)]))
 	else:
@@ -270,8 +270,6 @@ def event_page(request, event_id=None):
 	if len(events) == 1:
 		# get the event from the list
 		event = events[0]
-		#send_group_emails(event)
-		#notify_creator(event)
 
 		groups = Group.objects.filter(event=event)
 
