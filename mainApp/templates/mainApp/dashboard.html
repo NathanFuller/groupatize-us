@@ -38,6 +38,11 @@
 				font-size: 5vw;
 				margin-top: 75px;
 			}
+			hr {
+				display: block;
+    			height: 3px;
+    			background-color: White;
+			}
             .add-img {
                 margin: 10px;
             }
@@ -185,6 +190,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                    
                     </div>
                 {% else %}
                     <div class="event_container">
@@ -194,6 +200,45 @@
             {% load static %}
                 <img src="{% static 'mainApp/add.png' %}" alt="add" class="add-img" onclick="addEventModal()">
             </div>
+            
+            <div class="container-fluid text-center">
+                {% if part_list.count > 0 %}
+                <hr noshade>
+                <div class="container-fluid text-left">
+					<div>
+						<div class="row">
+							<div class="col-md-12">
+								<h1>Joined Events:</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+                    <div class="row">
+                    {% for event in part_list %}
+                        
+                    <div class="col-md-4">
+                        <div class="event_container">
+                            <h2>{{event.name}}</h2>
+                            <p>{{event.description}}</p>
+							<div class="container">
+								<div class="row">
+									<div class="col-xl-4"> 
+										<a href="../event/{{event.id}}" class= "btn btn-outline-primary">View Event</a>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    </div>
+                {% else %}
+                    <div class="event_container">
+                        <h2>No Events Joined</h2>
+                    </div>
+                {% endif %}
+            </div>
+            
     <div class="modal fade" id="addEventModal">
 	    	<div class="modal-dialog modal-sm" role="dialog">
 	    		<div class="modal-content">

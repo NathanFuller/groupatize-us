@@ -23,7 +23,7 @@ class User(models.Model):
 
 	# get all the events the user is a participant of in list form
 	def get_participant_events(self):
-		return self.part_Events.split(",")[1:]
+		return Event.objects.filter(participants=self)
 
 	# if you get compile error on sha3_256() try installing pysha3 with "$ pip install pysha3"
 	def change_password(self, new_password):

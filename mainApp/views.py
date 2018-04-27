@@ -336,10 +336,16 @@ def dashboard_page(request):
 		user = User.objects.filter(pk=request.session['user'])[0]
 
 		event_list = user.get_organized_events()
+		part_list = user.get_participant_events()
 
 		# context info
 		if len(event_list) > 0:
-			context = {'event_list': event_list}
+			if len(part_list) > 0:
+				context = {'event_list': event_list, 'part_list' : part_list}
+			else:
+				context = {'event_list': event_list}
+		elif len(part_list) > 0:
+			context = {'part_list': part_list}
 		else:
 			context = {'events': []}
 		return render(request, 'mainApp/dashboard.html', context)
