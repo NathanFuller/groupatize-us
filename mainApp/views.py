@@ -77,7 +77,7 @@ def groupatize(request):
 
 		#Get the U2P_Relations
 		u2p_list = U2P_Relation.objects.filter(event=event_id)
-		if len(u2p_list) < 1: 
+		if len(u2p_list) < 1:
 			return redirect('../dashboard/?ratings_present=False')
 		user_list = []
 		project_list = []
@@ -333,16 +333,11 @@ def dashboard_page(request):
 
 		event_list = user.get_organized_events()
 
-		referer = request.META.get('HTTP_REFERER').split('/')
 		# context info
 		if len(event_list) > 0:
 			context = {'event_list': event_list}
-			if referer[-2] == groupatize:
-				context = {'event_list': event_list, 'ratings_present': False}
 		else:
 			context = {'events': []}
-			if referer[-2] == groupatize:
-				context = {'events': [], 'ratings_present': False}
 		return render(request, 'mainApp/dashboard.html', context)
 	else:
 		print "Not Logged in"

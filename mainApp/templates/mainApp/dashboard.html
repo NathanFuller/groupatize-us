@@ -90,16 +90,6 @@
 				$('#addEventModal').modal('show');
 			}
 		</script>
-		
-				<!-- If its a redirect off a groupatize without ratings.-->
-		{% if ratings_present == 'False' %}
-			<script type='text/javascript'>
-				console.log("Bob");
-				$(window).on('load',function(){
-					$('#ratings_not_present_modal').modal('show');
-				});
-			</script>
-		{% endif %}
 	</head>
 	<body>
 		<!-- Navbar -->
@@ -221,18 +211,5 @@
 	    		</div>
 	    	</div>
 	    </div>
-				<!-- Groupatize failure notification -->
-		<div class="modal fade" id="ratings_not_present_modal">
-	    	<div class="modal-dialog modal-sm" role="dialog">
-	    		<div class="modal-content">
-	    			<div class="modal-body text-center">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4>Failure!</h4>
-						<p>No project ratings have been created.</p>
-	    			</div>
-	    		</div>
-	    	</div>
-	    </div>
-		
 	</body>
 </html>
